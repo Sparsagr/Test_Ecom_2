@@ -136,9 +136,7 @@
                   <li>
                     <a href=""><i class="fa fa-user"></i> Account</a>
                   </li>
-                  <li>
-                    <a href=""><i class="fa fa-star"></i> Wishlist</a>
-                  </li>
+
                   <li>
                     <a href="checkout.html"
                       ><i class="fa fa-crosshairs"></i> Checkout</a
@@ -146,11 +144,18 @@
                   </li>
                   <li>
                     <a href="cart.html" class="active"
-                      ><i class="fa fa-shopping-cart"></i> Cart</a
-                    >
+                      ><i class="fa fa-shopping-cart"></i> Cart (
+                      {{len_of_cart}} )
+                    </a>
                   </li>
                   <li>
+                    {% if not user.is_authenticated %}
                     <a href="login.html"><i class="fa fa-lock"></i> Login</a>
+                    {% else %}
+                    <a href="/accounts/user_logout"
+                      ><i class="fa fa-lock"></i> Logout</a
+                    >
+                    {% endif %}
                   </li>
                 </ul>
               </div>
@@ -238,12 +243,13 @@
               </tr>
             </thead>
             <tbody>
+              {% for items in cart_itmes %}
               <tr>
                 <td class="cart_product">
                   <a href=""><img src="images/cart/one.png" alt="" /></a>
                 </td>
                 <td class="cart_description">
-                  <h4><a href="">Colorblock Scuba</a></h4>
+                  <h4><a href="">{{ items.product }}</a></h4>
                   <p>Web ID: 1089772</p>
                 </td>
                 <td class="cart_price">
@@ -256,7 +262,7 @@
                       class="cart_quantity_input"
                       type="text"
                       name="quantity"
-                      value="1"
+                      value="{{ items.quantity }}"
                       autocomplete="off"
                       size="2"
                     />
@@ -272,75 +278,7 @@
                   ></a>
                 </td>
               </tr>
-
-              <tr>
-                <td class="cart_product">
-                  <a href=""><img src="images/cart/two.png" alt="" /></a>
-                </td>
-                <td class="cart_description">
-                  <h4><a href="">Colorblock Scuba</a></h4>
-                  <p>Web ID: 1089772</p>
-                </td>
-                <td class="cart_price">
-                  <p>$59</p>
-                </td>
-                <td class="cart_quantity">
-                  <div class="cart_quantity_button">
-                    <a class="cart_quantity_up" href=""> + </a>
-                    <input
-                      class="cart_quantity_input"
-                      type="text"
-                      name="quantity"
-                      value="1"
-                      autocomplete="off"
-                      size="2"
-                    />
-                    <a class="cart_quantity_down" href=""> - </a>
-                  </div>
-                </td>
-                <td class="cart_total">
-                  <p class="cart_total_price">$59</p>
-                </td>
-                <td class="cart_delete">
-                  <a class="cart_quantity_delete" href=""
-                    ><i class="fa fa-times"></i
-                  ></a>
-                </td>
-              </tr>
-              <tr>
-                <td class="cart_product">
-                  <a href=""><img src="images/cart/three.png" alt="" /></a>
-                </td>
-                <td class="cart_description">
-                  <h4><a href="">Colorblock Scuba</a></h4>
-                  <p>Web ID: 1089772</p>
-                </td>
-                <td class="cart_price">
-                  <p>$59</p>
-                </td>
-                <td class="cart_quantity">
-                  <div class="cart_quantity_button">
-                    <a class="cart_quantity_up" href=""> + </a>
-                    <input
-                      class="cart_quantity_input"
-                      type="text"
-                      name="quantity"
-                      value="1"
-                      autocomplete="off"
-                      size="2"
-                    />
-                    <a class="cart_quantity_down" href=""> - </a>
-                  </div>
-                </td>
-                <td class="cart_total">
-                  <p class="cart_total_price">$59</p>
-                </td>
-                <td class="cart_delete">
-                  <a class="cart_quantity_delete" href=""
-                    ><i class="fa fa-times"></i
-                  ></a>
-                </td>
-              </tr>
+              {% endfor %}
             </tbody>
           </table>
         </div>

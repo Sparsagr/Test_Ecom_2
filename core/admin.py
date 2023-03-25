@@ -9,5 +9,4 @@ class CustomerAdmin(admin.ModelAdmin):
                "date_joined", "groups", "user_permissions", "password")
 
 
-admin.site.register(Category)
-admin.site.register(Product)
+admin.site.register((Category, Product, Offer, Order, OrderItem, Cart))
