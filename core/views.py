@@ -51,7 +51,7 @@ def cart(request):
     if Cart.objects.filter(user=request.user).exists():
         order = Order.objects.get(user=request.user, ordered=False)
         cart_itmes = Cart.objects.filter(user=request.user)
-        len_of_cart = len(Cart.objects.all())
+        len_of_cart = len(Cart.objects.filter(user=request.user))
         return render(request, 'core/cart.html', {'order': order, 'len_of_cart': len_of_cart, 'cart_itmes': cart_itmes})
     return render(request, 'core/cart.html', {'message': "Your cart is empty"})
 
