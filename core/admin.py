@@ -9,4 +9,4 @@ class CustomerAdmin(admin.ModelAdmin):
                "date_joined", "groups", "user_permissions", "password")
 
 
-admin.site.register((Category, Product, Offer, Order, OrderItem, Cart))
+admin.site.register((Category, Product, Offer, Order, OrderItem, Cart, ContactUs, Newsletter))
