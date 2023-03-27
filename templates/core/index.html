@@ -145,6 +145,9 @@
                       <a href="{% url 'add_to_cart' product.pk %}" class="btn btn-default add-to-cart"
                         ><i class="fa fa-shopping-cart"></i>Add to cart</a
                       >
+                      <a href="{% url 'products' product.slug %}" class="btn btn-default add-to-cart"
+                        ></i>View Product</a
+                      >
                     </div>
                     <div class="product-overlay">
                       <div class="overlay-content">
@@ -153,6 +156,9 @@
                         <a href="{% url 'add_to_cart' product.pk %}" class="btn btn-default add-to-cart"
                           ><i class="fa fa-shopping-cart"></i>Add to cart</a
                         >
+                        <a href="{% url 'products' product.slug %}" class="btn btn-default add-to-cart"
+                        ></i>View Product</a
+                      >
                       </div>
                     </div>
                   </div>

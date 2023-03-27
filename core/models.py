@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
+from django.utils.text import slugify
 
 
 # Create your models here.
@@ -28,11 +29,15 @@ class Category(models.Model):
 class Product(models.Model):
     name = models.CharField(max_length=100)
     category = models.ForeignKey('Category', on_delete=models.CASCADE)
-    slug = slug = models.SlugField(unique=True, null=True, blank=True)
+    slug = models.SlugField(unique=True, null=True, blank=True)
     desc = models.TextField()
     price = models.FloatField(default=0.0)
     product_available_count = models.IntegerField(default=0)
     img = models.ImageField(upload_to='images/')
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        super(Product, self).save(*args, **kwargs)
 
     def get_add_to_cart_url(self):
         return reverse("core:add-to-cart", kwargs={"pk": self.pk})
@@ -40,6 +45,11 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
+# class Reviews(models.Model):
+#     name = models.CharField(max_length=50)
+#     email = models.EmailField()
+#     review = models.CharField(max_length=5000)
+#     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="product_images")
 
 class Offer(models.Model):
     image = models.ImageField(upload_to="offers/")

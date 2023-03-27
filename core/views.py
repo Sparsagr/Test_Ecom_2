@@ -136,11 +136,16 @@ def category(request, id):
 
     return render(request, "core/category.html", parameters)
 
-def products(request):
-    if(request.user.is_authenticated):
-        len_of_cart = len(Cart.objects.filter(user=request.user))
-        return render(request,"core/product-details.html",{'len_of_cart':len_of_cart})
-    return render(request,"core/product-details.html")
+def products(request, slug):
+    try:
+        product = Product.objects.get(slug=slug)
+        if(request.user.is_authenticated):
+            len_of_cart = len(Cart.objects.filter(user=request.user))
+            return render(request,"core/product-details.html", {'len_of_cart':len_of_cart, 'prodDescp':product})
+        return render(request,"core/product-details.html", {'prodDescp':product})
+
+    except Exception as e:
+        return HttpResponse("404 Not Found")
     
 
 def shop(request):
