@@ -10,3 +10,10 @@ class CustomerAdmin(admin.ModelAdmin):
 
 
 admin.site.register((Category, Product, Offer, Order, OrderItem, Cart, ContactUs, Newsletter))
+
+# class ReviewInline(admin.StackedInline):
+#     model = Reviews
+
+# @admin.register(Product)
+# class ProductAdmin(admin.ModelAdmin):
+#     inlines = [ReviewInline]
