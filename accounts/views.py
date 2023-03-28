@@ -23,14 +23,17 @@ def user_login(request):
 
 def user_register(request):
     if request.method == "POST":
-        username = request.POST["username"]
-        email_address = request.POST["email_address"]
-        password = request.POST["password"]
+        try:
+            username = request.POST["username"]
+            email_address = request.POST["email_address"]
+            password = request.POST["password"]
 
-        new_user = Customer(username=username, email=email_address)
-        new_user.set_password(str(password))
+            new_user = Customer(username=username, email=email_address)
+            new_user.set_password(str(password))
 
-        new_user.save()
+            new_user.save()
+        except Exception as e:
+            return HttpResponse("Username or Email already exists!")
         login(request, new_user)
         return redirect("/")
 

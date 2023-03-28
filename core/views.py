@@ -128,21 +128,26 @@ def add_to_cart(request, pk):
 def category(request, id):
     category = Category.objects.get(id=id)
     products = Product.objects.filter(category=category)
+    categories = Category.objects.all()
 
     parameters = {
         "category": category,
-        "products": products
+        "products": products,
+        'categories': categories
     }
 
-    return render(request, "core/category.html", parameters)
+    return render(request, "core/shop.html", parameters)
 
 def products(request, slug):
     try:
         product = Product.objects.get(slug=slug)
+        ordered_products = Product.objects.exclude(slug=slug)
+        recommended_products = ordered_products.order_by("?")[:3]
+        reviews = Reviews.objects.filter(product = product)
         if(request.user.is_authenticated):
             len_of_cart = len(Cart.objects.filter(user=request.user))
-            return render(request,"core/product-details.html", {'len_of_cart':len_of_cart, 'prodDescp':product})
-        return render(request,"core/product-details.html", {'prodDescp':product})
+            return render(request,"core/product-details.html", {'len_of_cart':len_of_cart, 'prodDescp':product, 'reviews':reviews,'recommended_products':recommended_products})
+        return render(request,"core/product-details.html", {'prodDescp':product,'reviews':reviews,'recommended_products':recommended_products})
 
     except Exception as e:
         return HttpResponse("404 Not Found")
@@ -150,10 +155,11 @@ def products(request, slug):
 
 def shop(request):
     products= Product.objects.all()
+    categories = Category.objects.all()
     if(request.user.is_authenticated):
         len_of_cart = len(Cart.objects.filter(user=request.user))
-        return render(request,"core/shop.html",{'len_of_cart':len_of_cart,'products':products})
-    return render(request,"core/shop.html",{'products':products})
+        return render(request,"core/shop.html",{'len_of_cart':len_of_cart,'products':products,'categories': categories,})
+    return render(request,"core/shop.html",{'products':products,'categories': categories,})
 
 def contactus(request):
     if(request.user.is_authenticated):
@@ -185,3 +191,22 @@ def managenewsletter(request):
         newsletter.save()
         return redirect("/")
     return render(request, "core/404.html")
+
+def saveReview(request,slug):
+    if request.method == "POST":
+        name = request.POST['name']
+        email = request.POST['email']
+        message = request.POST['message']
+        product = Product.objects.get(slug=slug)
+        review_details = Reviews(name=name, email=email, review=message, product=product)
+        review_details.save()
+        return redirect(f"/{slug}") 
+
+def search(request):
+    query = request.GET.get("query")
+    all_products_name = Product.objects.filter(name__icontains=query)
+    all_products_desc = Product.objects.filter(desc__icontains=query)
+    filtered_prods = all_products_name | all_products_desc 
+    categories = Category.objects.all()
+    params = {"products": filtered_prods,'query':query,'categories': categories,}
+    return render(request, "core/shop.html", params)

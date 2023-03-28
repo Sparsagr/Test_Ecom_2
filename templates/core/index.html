@@ -104,22 +104,14 @@
                   <ul class="nav nav-pills nav-stacked">
 
                     {% for category in categories %}
-
                     <li>
-                      <a href="category/{{ category.id }}"> <span class="pull-right">{{ category.product_count }}</span> {{ category.category_name }}</a>
+                      <a href="/category/{{ category.id }}"> <span class="pull-right">{{ category.product_count }}</span> {{ category.category_name }}</a>
                     </li>
 
                     {% endfor %}
                   </ul>
                 </div>
               </div>
-              
-
-              <div class="shipping text-center">
-                <!--shipping-->
-                <img src="{{ offer.image.url }}" alt="" />
-              </div>
-              <!--/shipping-->
             </div>
           </div>
 
@@ -129,9 +121,8 @@
               
               <!-- ======================================= products for loop =-=================================== -->
               <h2 class="title text-center">Features Items</h2>
-
+              <div class="outer-box" style="display: flex; justify-content: space-around; flex-wrap: wrap;">
               {% for product in products %}
-
               <div class="col-sm-4">
                 <div class="product-image-wrapper">
                   <div class="single-products">
@@ -164,8 +155,8 @@
                   </div>
                 </div>
               </div>
-
               {% endfor %}
+            </div>
 
           </div>
         </div>

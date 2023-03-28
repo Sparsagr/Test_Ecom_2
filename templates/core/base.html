@@ -114,7 +114,7 @@
                   <li>
                     <a href="/cart"><i class="fa fa-shopping-cart"></i> Cart&nbsp;&nbsp;
                       {% if user.is_authenticated %}
-                      <div style="color: yellow;">{{ len_of_cart }}</div>
+                      <div style="color: #fe980f; display: inline;">({{ len_of_cart }})</div>
                       {% endif %}
                     </a> 
                   </li>
@@ -122,7 +122,7 @@
                   {% if user.is_authenticated %}
 
                   <li>
-                    <a href=" accounts/user_logout"
+                    <a href=" /accounts/user_logout"
                       ><i class="fa fa-lock"></i> Logout</a
                     >
                   </li>
@@ -135,7 +135,7 @@
                   {% else %}
 
                   <li>
-                    <a href=" accounts/user_login"
+                    <a href=" /accounts/user_login"
                       ><i class="fa fa-lock"></i> Login</a
                     >
                   </li>
@@ -176,10 +176,6 @@
                       <li>
                         <a href="/shop">Products</a>
                       </li>
-                      <li>
-                        <a href="/products">Product Details</a>
-                      </li>
-                      <li><a href="/checkout">Checkout</a></li>
                       <li><a href="/cart">Cart</a></li>
                     </ul>
                   </li>
@@ -189,9 +185,10 @@
               </div>
             </div>
             <div class="col-sm-3">
-              <div class="search_box pull-right">
-                <input type="text" placeholder="Search" />
-              </div>
+              <form action="/search" class="search_box pull-right" method="get">
+                <input type="text" required name="query" placeholder="Search" />
+                <button type="submit" class="btn btn-fefault">Search</button>
+              </form>
             </div>
           </div>
         </div>

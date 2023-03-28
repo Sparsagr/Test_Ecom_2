@@ -45,11 +45,14 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
-# class Reviews(models.Model):
-#     name = models.CharField(max_length=50)
-#     email = models.EmailField()
-#     review = models.CharField(max_length=5000)
-#     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="product_images")
+class Reviews(models.Model):
+    name = models.CharField(max_length=50)
+    email = models.EmailField()
+    review = models.CharField(max_length=5000)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="product_images")
+
+    def __str__(self) -> str:
+        return self.name
 
 class Offer(models.Model):
     image = models.ImageField(upload_to="offers/")
