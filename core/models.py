@@ -45,14 +45,17 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
+
 class Reviews(models.Model):
     name = models.CharField(max_length=50)
     email = models.EmailField()
     review = models.CharField(max_length=5000)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="product_images")
+    product = models.ForeignKey(
+        Product, on_delete=models.CASCADE, related_name="product_images")
 
     def __str__(self) -> str:
         return self.name
+
 
 class Offer(models.Model):
     image = models.ImageField(upload_to="offers/")
@@ -120,6 +123,7 @@ class Cart(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)
 
+
 class ContactUs(models.Model):
     name = models.CharField(max_length=100)
     email = models.EmailField()
@@ -129,8 +133,20 @@ class ContactUs(models.Model):
     def __str__(self) -> str:
         return self.message
 
+
 class Newsletter(models.Model):
     email = models.EmailField()
 
     def __str__(self) -> str:
         return self.email
+
+
+class checkout(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    street_adress = models.CharField(max_length=100)
+    apartment_address = models.CharField(max_length=100)
+    country = CountryField(multiple=False)
+    zip_code = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.user.username
