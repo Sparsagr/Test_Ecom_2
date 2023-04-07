@@ -8,7 +8,7 @@
         <li class="active">Shopping Cart</li>
       </ol>
     </div>
-    <div class="table-responsive cart_info">
+    <div class="table-responsive cart_info" style="border: 2px solid grey; display: flex; flex-direction: column;">
       {% if not message %}
       <table class="table table-condensed">
         <thead>
@@ -36,14 +36,14 @@
               </td>
               <td class="cart_quantity">
                 <form method="post" class="cart_quantity_button"> {% csrf_token %}
-                  <a class="cart_quantity_up plus-btn" data-item-id="{{ items.0.pk }}">+</a>
+                  <a class="cart_quantity_up plus-btn" style="cursor: pointer; user-select: none;" data-item-id="{{ items.0.pk }}">+</a>
                   {% if quantity and items.0.product.slug == inst_product %}
                   <input class="cart_quantity_input" type="text" name="quantity" value="{{quantity}}" readonly autocomplete="off" size="2"/>
                   {% else %}
                   <input class="cart_quantity_input" type="text" name="quantity" value="{{ items.0.quantity }}" readonly autocomplete="off" size="2"/>
                   {% endif %}
                   <input type="hidden" name="prod-slug" id="" value="{{ items.0.product.slug }}">
-                  <a class="cart_quantity_down minus-btn" data-item-id="{{ items.pk }}">-</a>
+                  <a class="cart_quantity_down minus-btn" style="cursor: pointer; user-select: none;" data-item-id="{{ items.pk }}">-</a>
                   <input type="submit" style="background: #FE980F; border: none; color: white; padding: 0.4rem " value="Set">
                 </form>
               </td>
@@ -56,9 +56,11 @@
               </td>
             </tr>
           {% endfor %}
-
         </tbody>
       </table>
+      <div class="proc-to-pay" style="border-top: 2px solid grey; display: flex; flex-direction: column;">
+        <a href="/checkout" class="btn" style="background: #FE980F; border: none; margin: 1rem 0; color: white; padding: 0.4rem ">Proceed To Buy</a>
+      </div>
       {% else %}
       <h3 style="text-align: center">{{message}}</h3>
       {% endif %}

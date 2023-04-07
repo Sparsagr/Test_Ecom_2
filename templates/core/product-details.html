@@ -14,37 +14,6 @@
 							<div class="view-product">
 								<img src="/media/{{prodDescp.img}}" alt="" />
 							</div>
-							<!-- <div id="similar-product" class="carousel slide" data-ride="carousel">
-								
-								  Wrapper for slides
-								    <div class="carousel-inner">
-										<div class="item active">
-										  <a href=""><img src="images/product-details/similar1.jpg" alt=""></a>
-										  <a href=""><img src="images/product-details/similar2.jpg" alt=""></a>
-										  <a href=""><img src="images/product-details/similar3.jpg" alt=""></a>
-										</div>
-										<div class="item">
-										  <a href=""><img src="images/product-details/similar1.jpg" alt=""></a>
-										  <a href=""><img src="images/product-details/similar2.jpg" alt=""></a>
-										  <a href=""><img src="images/product-details/similar3.jpg" alt=""></a>
-										</div>
-										<div class="item">
-										  <a href=""><img src="images/product-details/similar1.jpg" alt=""></a>
-										  <a href=""><img src="images/product-details/similar2.jpg" alt=""></a>
-										  <a href=""><img src="images/product-details/similar3.jpg" alt=""></a>
-										</div>
-										
-									</div>
-
-								  Controls
-								  <a class="left item-control" href="#similar-product" data-slide="prev">
-									<i class="fa fa-angle-left"></i>
-								  </a>
-								  <a class="right item-control" href="#similar-product" data-slide="next">
-									<i class="fa fa-angle-right"></i>
-								  </a>
-							</div> -->
-
 						</div>
 						<div class="col-sm-7">
 							<div class="product-information"><!--/product-information-->
@@ -53,8 +22,6 @@
 								<img src="images/product-details/rating.png" alt="" />
 								<span>
 									<span>US ${{prodDescp.price}}</span>
-									<label>Quantity:</label>
-									<input type="text" value="3" />
 									<a href="{% url 'add_to_cart' prodDescp.pk %}" type="button" class="btn btn-fefault cart">
 										<i class="fa fa-shopping-cart"></i>
 										Add to cart
@@ -117,7 +84,7 @@
 					</div><!--/category-tab-->
 					
 					<div class="recommended_items"><!--recommended_items-->
-						<h2 class="title text-center">recommended items</h2>
+						<h2 class="title text-center">Recommended items</h2>
 						
 						<div id="recommended-item-carousel" class="carousel" data-ride="carousel">
 							<div class="carousel-inner">
@@ -130,7 +97,7 @@
 													<img src="/media/{{item.img}}" alt="" />
 													<h2>{{item.price}}</h2>
 													<p>{{item.name}}</p>
-													<button type="button" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</button>
+													<a href="{% url 'add_to_cart' item.pk %}" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
 												</div>
 											</div>
 										</div>

@@ -89,7 +89,6 @@ def cart(request):
             cart_prod_and_price = []
             for item in cart_items:
                 cart_prod_and_price.append([item,(item.quantity * item.product.price)])
-            print(cart_prod_and_price)
             return render(request, 'core/cart.html', {'order': order, 'len_of_cart': len_of_cart,'cart_prod_and_price':cart_prod_and_price})
         len_of_cart = len(Cart.objects.filter(user=request.user))
         return render(request, 'core/cart.html', {'message': "Your cart is empty", 'len_of_cart': len_of_cart})
