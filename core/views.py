@@ -57,15 +57,31 @@ def add_product(request):
         form = ProductForm()
     return render(request, 'core/add_product.html', {'form': form})
 
-
+@login_required(login_url='login')
 def checkout(request):
-    if (request.user.is_authenticated):
+    if Cart.objects.filter(user=request.user).exists():
+        order = Order.objects.get(user=request.user, ordered=False)
+        cart_items = Cart.objects.filter(user=request.user)
         len_of_cart = len(Cart.objects.filter(user=request.user))
-        print(len_of_cart)
-        return render(request, 'core/checkout.html', {'len_of_cart': len_of_cart})
-    else:
-        return render(request, 'core/checkout.html')
-
+        if request.method == "POST" and request.POST.get('quantity',False):
+            quantity = int(request.POST['quantity'])
+            product_slug_filter = request.POST.get('prod-slug',"none")
+            inst_product = Product.objects.filter(slug=product_slug_filter).first()
+            if inst_product:
+                cart_item = Cart.objects.filter(user=request.user, product=inst_product).first()
+                order_item = OrderItem.objects.filter(user=request.user, product=inst_product).first()
+                if cart_item and order_item:
+                    cart_item.set_quantity(quantity)
+                    order_item.set_quantity(quantity)	
+                    cart_item.save()
+                    order_item.save()
+                    return redirect('/cart')
+        cart_prod_and_price = []
+        total_price = 0
+        for item in cart_items:
+            total_price += int(item.quantity * item.product.price)
+            cart_prod_and_price.append([item,(item.quantity * item.product.price)])
+        return render(request, 'core/checkout.html', {'order': order, 'len_of_cart': len_of_cart,'cart_prod_and_price':cart_prod_and_price, 'total_price':total_price})
 
 def cart(request):
     if request.user.is_authenticated:
