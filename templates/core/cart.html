@@ -1,73 +1,193 @@
-{% extends './base.html' %}
-{% load static %}
-{% block start %}
-    
+{% extends './base.html' %} {% load static %} {% block start %}
 
-    <section id="cart_items">
-      <div class="container">
-        <div class="breadcrumbs">
-          <ol class="breadcrumb">
-            <li><a href="#">Home</a></li>
-            <li class="active">Shopping Cart</li>
-          </ol>
-        </div>
-        <div class="table-responsive cart_info">
-          {% if not message %}
-          <table class="table table-condensed">
-            <thead>
-              <tr class="cart_menu">
-                <td class="image">Item</td>
-                <td class="description"></td>
-                <td class="price">Price</td>
-                <td class="quantity">Quantity</td>
-                <td class="total">Total</td>
-                <td></td>
-              </tr>
-            </thead>
-            <tbody>
-              {% for items in cart_itmes %}
-              <tr>
-                <td class="cart_product">
-                  <a href=""><img style="width: 15rem;" src="{{ items.product.img.url }}" alt="" /></a>
-                </td>
-                <td class="cart_description">
-                  <h4><a href="">{{ items.product }}</a></h4>
-                </td>
-                <td class="cart_price">
-                  <p>INR {{items.product.price}}</p>
-                </td>
-                <td class="cart_quantity">
-                  <div class="cart_quantity_button">
-                    <a class="cart_quantity_up" href=""> + </a>
-                    <input
-                      class="cart_quantity_input"
-                      type="text"
-                      name="quantity"
-                      value="{{ items.quantity }}"
-                      autocomplete="off"
-                      size="2"
-                    />
-                    <a class="cart_quantity_down" href=""> - </a>
-                  </div>
-                </td>
-                <td class="cart_total">
-                  <p class="cart_total_price"></p>
-                </td>
-                <td class="cart_delete">
-                  <a class="cart_quantity_delete" href="/remove_cart_items/{{ items.pk }}"
-                    ><i class="fa fa-times"></i
-                  ></a>
-                </td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-          {% else %}
-            <h3 style="text-align: center;">{{message}}</h3>
-          {% endif %}
-        </div>
-      </div>
-    </section>
-    <!--/#cart_items-->
+<section id="cart_items">
+  <div class="container">
+    <div class="breadcrumbs">
+      <ol class="breadcrumb">
+        <li><a href="#">Home</a></li>
+        <li class="active">Shopping Cart</li>
+      </ol>
+    </div>
+    <div class="table-responsive cart_info">
+      {% if not message %}
+      <table class="table table-condensed">
+        <thead>
+          <tr class="cart_menu">
+            <td class="image">Item</td>
+            <td class="description"></td>
+            <td class="price">Price</td>
+            <td class="quantity">Quantity</td>
+            <td class="total">Total Item Price</td>
+            <td></td>
+          </tr>
+        </thead>
+        <tbody>
+          {% for items in cart_prod_and_price %}
+            <tr>
+              <td class="cart_product">
+                <a href=""><img style="width: 15rem" src="{{ items.0.product.img.url }}" alt=""/></a>
+              </td>
+              <td class="cart_description">
+                <h4><a href="">{{ items.0.product }}</a></h4>
+              </td>
+              <td class="cart_price">
+                <p>Rs.</p>
+                {{ items.0.product.price }}
+              </td>
+              <td class="cart_quantity">
+                <form method="post" class="cart_quantity_button"> {% csrf_token %}
+                  <a class="cart_quantity_up plus-btn" data-item-id="{{ items.0.pk }}">+</a>
+                  {% if quantity and items.0.product.slug == inst_product %}
+                  <input class="cart_quantity_input" type="text" name="quantity" value="{{quantity}}" readonly autocomplete="off" size="2"/>
+                  {% else %}
+                  <input class="cart_quantity_input" type="text" name="quantity" value="{{ items.0.quantity }}" readonly autocomplete="off" size="2"/>
+                  {% endif %}
+                  <input type="hidden" name="prod-slug" id="" value="{{ items.0.product.slug }}">
+                  <a class="cart_quantity_down minus-btn" data-item-id="{{ items.pk }}">-</a>
+                  <input type="submit" style="background: #FE980F; border: none; color: white; padding: 0.4rem " value="Set">
+                </form>
+              </td>
+              <td class="cart_total">
+                <p class="cart_total_price">Rs.</p>
+                {{ items.1 }}
+              </td>
+              <td class="cart_delete">
+                <a class="cart_quantity_delete" href="/remove_cart_items/{{ items.0.pk }}"><i class="fa fa-times"></i></a>
+              </td>
+            </tr>
+          {% endfor %}
 
-    {% endblock %}
+        </tbody>
+      </table>
+      {% else %}
+      <h3 style="text-align: center">{{message}}</h3>
+      {% endif %}
+    </div>
+  </div>
+</section>
+<script>
+  const plusBtns = document.querySelectorAll(".plus-btn");
+  const minusBtns = document.querySelectorAll(".minus-btn");
+
+  plusBtns.forEach((btn) => {
+    const itemId = btn.dataset.itemId;
+    const inputEl = btn.parentElement.querySelector(".cart_quantity_input");
+    btn.addEventListener("click", () => {
+      inputEl.value = parseInt(inputEl.value) + 1;
+      inputEl.setAttribute("value",inputEl.value)
+    });
+  });
+
+  minusBtns.forEach((btn) => {
+    const itemId = btn.dataset.itemId;
+    const inputEl = btn.parentElement.querySelector(".cart_quantity_input");
+    btn.addEventListener("click", () => {
+      if (parseInt(inputEl.value) > 1) {
+        inputEl.value = parseInt(inputEl.value) - 1;
+        inputEl.setAttribute("value",inputEl.value)
+      }
+    });
+  });
+</script>
+<!--/#cart_items-->
+
+{% endblock %}
+
+
+<!-- 
+
+  i want to set the quantity of cart item :
+
+views.py 
+
+def cart(request):
+    if request.user.is_authenticated:
+        if Cart.objects.filter(user=request.user).exists():
+            order = Order.objects.get(user=request.user, ordered=False)
+            cart_items = Cart.objects.filter(user=request.user)
+            len_of_cart = len(Cart.objects.filter(user=request.user))
+            if request.method == "GET" and request.GET.get('quantity',False):
+                print("Entered")
+                quantity = int(request.GET['quantity'])
+                product_slug_filter = request.GET.get('prod-slug',"none")
+                inst_product = Product.objects.filter(slug=product_slug_filter).first()
+                print(inst_product)
+                if inst_product:
+                    price = inst_product.price
+                    cart_prod = Cart.objects.filter(product=inst_product).first()
+                    print(cart_prod.objects.all())
+                    total_price = price*quantity
+                    print(total_price)
+                    return render(request, 'core/cart.html', {'order': order, 'len_of_cart': len_of_cart, 'cart_items': cart_items, 'total_price': total_price, 'quantity':quantity, 'inst_product':product_slug_filter})
+            return render(request, 'core/cart.html', {'order': order, 'len_of_cart': len_of_cart, 'cart_items': cart_items})
+        len_of_cart = len(Cart.objects.filter(user=request.user))
+        return render(request, 'core/cart.html', {'message': "Your cart is empty", 'len_of_cart': len_of_cart})
+    return redirect("/accounts/user_login")
+
+models.py
+
+class Product(models.Model):
+    name = models.CharField(max_length=100)
+    category = models.ForeignKey('Category', on_delete=models.CASCADE)
+    slug = models.SlugField(unique=True, null=True, blank=True)
+    desc = models.TextField()
+    price = models.FloatField(default=0.0)
+    product_available_count = models.IntegerField(default=0)
+    img = models.ImageField(upload_to='images/')
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        super(Product, self).save(*args, **kwargs)
+
+    def get_add_to_cart_url(self):
+        return reverse("core:add-to-cart", kwargs={"pk": self.pk})
+
+    def __str__(self):
+        return self.name
+
+class Cart(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.IntegerField(default=1)
+
+
+cart.html
+
+{% for items in cart_items %}
+            <tr>
+              <td class="cart_product">
+                <a href=""><img style="width: 15rem" src="{{ items.product.img.url }}" alt=""/></a>
+              </td>
+              <td class="cart_description">
+                <h4><a href="">{{ items.product }}</a></h4>
+              </td>
+              <td class="cart_price">
+                <p>Rs.</p>
+                {{ items.product.price }}
+              </td>
+              <td class="cart_quantity">
+                <form method="get" class="cart_quantity_button"> 
+                  <a class="cart_quantity_up plus-btn" data-item-id="{{ items.pk }}">+</a>
+                  {% if quantity and items.product.slug == inst_product %}
+                  <input class="cart_quantity_input" type="text" name="quantity" value="{{quantity}}" readonly autocomplete="off" size="2"/>
+                  {% else %}
+                  <input class="cart_quantity_input" type="text" name="quantity" value="{{ items.quantity }}" readonly autocomplete="off" size="2"/>
+                  {% endif %}
+                  <input type="hidden" name="prod-slug" id="" value="{{ items.product.slug }}">
+                  <a class="cart_quantity_down minus-btn" data-item-id="{{ items.pk }}">-</a>
+                  <input type="submit" style="background: #FE980F; border: none; color: white; padding: 0.4rem " value="Set">
+                </form>
+              </td>
+              <td class="cart_total">
+                <p class="cart_total_price">Rs.</p>
+                {{ items.get_total_item_price }}
+              </td>
+              <td class="cart_delete">
+                <a class="cart_quantity_delete" href="/remove_cart_items/{{ items.pk }}"><i class="fa fa-times"></i></a>
+              </td>
+            </tr>
+          {% endfor %}
+
+but getting an error please help!
+
+ -->
