@@ -9,10 +9,13 @@ class CustomerAdmin(admin.ModelAdmin):
                "date_joined", "groups", "user_permissions", "password")
 
 
-admin.site.register((Category, Offer, Order, OrderItem, Cart, ContactUs, Newsletter, Reviews))
+admin.site.register((Category, Offer, Order, OrderItem, Cart,
+                    ContactUs, Newsletter, Reviews, checkout))
+
 
 class ReviewInline(admin.StackedInline):
     model = Reviews
+
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):

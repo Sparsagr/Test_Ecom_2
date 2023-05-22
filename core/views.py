@@ -57,7 +57,7 @@ def add_product(request):
         form = ProductForm()
     return render(request, 'core/add_product.html', {'form': form})
 
-@login_required(login_url='login')
+@login_required(login_url='user_login')
 def checkout(request):
     if Cart.objects.filter(user=request.user).exists():
         order = Order.objects.get(user=request.user, ordered=False)

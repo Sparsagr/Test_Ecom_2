@@ -1,5 +1,4 @@
-{% load static %}
-{% load  cart_template_tag %}
+{% load static %} {% load cart_template_tag %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -40,8 +39,7 @@
       rel="apple-touch-icon-precomposed"
       href="{% static 'images/ico/apple-touch-icon-57-precomposed.png' %}"
     />
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    </head
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script></head
   ><!--/head-->
 
   <body>
@@ -97,28 +95,28 @@
           <div class="row">
             <div class="col-sm-4">
               <div class="logo pull-left">
-                <a href="index.html"
-                  ><img
-                    src="{% static 'images/home/logo.png' %}"
-                    alt=""
+                <a href="/"
+                  ><img src="{% static 'images/home/logo.png' %}" alt=""
                 /></a>
               </div>
             </div>
             <div class="col-sm-8">
               <div class="shop-menu pull-right">
                 <ul class="nav navbar-nav">
-                  
                   <li>
-                    <a href="checkout"
+                    <a href="/checkout"
                       ><i class="fa fa-crosshairs"></i> Checkout</a
                     >
                   </li>
                   <li>
-                    <a href="/cart"><i class="fa fa-shopping-cart"></i> Cart&nbsp;&nbsp;
-                      {% if user.is_authenticated %}
-                      <div style="color: #fe980f; display: inline;">({{ len_of_cart }})</div>
+                    <a href="/cart"
+                      ><i class="fa fa-shopping-cart"></i> Cart&nbsp;&nbsp;
+                       {% if user.is_authenticated %}
+                      <div style="color: #fe980f; display: inline">
+                        ({{ len_of_cart }})
+                      </div>
                       {% endif %}
-                    </a> 
+                    </a>
                   </li>
 
                   {% if user.is_authenticated %}
@@ -198,110 +196,119 @@
       <!--/header-bottom-->
     </header>
 
-    {% block start %}
-
-    {% endblock %}
+    {% block start %} {% endblock %}
 
     <!--/header-->
     <footer id="footer">
-        <!--Footer-->
-  
-        <div class="footer-widget">
-          <div class="container">
-            <div class="row">
-              <div class="col-sm-2">
-                <div class="single-widget">
-                  <h2>Service</h2>
-                  <ul class="nav nav-pills nav-stacked">
-                    <li><a href="#">Online Help</a></li>
-                    <li><a href="#">Contact Us</a></li>
-                    <li><a href="#">Order Status</a></li>
-                    <li><a href="#">Change Location</a></li>
-                    <li><a href="#">FAQ’s</a></li>
-                  </ul>
-                </div>
-              </div>
-              <div class="col-sm-2">
-                <div class="single-widget">
-                  <h2>Quock Shop</h2>
-                  <ul class="nav nav-pills nav-stacked">
-                    <li><a href="#">T-Shirt</a></li>
-                    <li><a href="#">Mens</a></li>
-                    <li><a href="#">Womens</a></li>
-                    <li><a href="#">Gift Cards</a></li>
-                    <li><a href="#">Shoes</a></li>
-                  </ul>
-                </div>
-              </div>
-              <div class="col-sm-2">
-                <div class="single-widget">
-                  <h2>Policies</h2>
-                  <ul class="nav nav-pills nav-stacked">
-                    <li><a href="#">Terms of Use</a></li>
-                    <li><a href="#">Privecy Policy</a></li>
-                    <li><a href="#">Refund Policy</a></li>
-                    <li><a href="#">Billing System</a></li>
-                    <li><a href="#">Ticket System</a></li>
-                  </ul>
-                </div>
-              </div>
-              <div class="col-sm-2">
-                <div class="single-widget">
-                  <h2>About Shopper</h2>
-                  <ul class="nav nav-pills nav-stacked">
-                    <li><a href="#">Company Information</a></li>
-                    <li><a href="#">Careers</a></li>
-                    <li><a href="#">Store Location</a></li>
-                    <li><a href="#">Affillate Program</a></li>
-                    <li><a href="#">Copyright</a></li>
-                  </ul>
-                </div>
-              </div>
-              <div class="col-sm-3 col-sm-offset-1">
-                <div class="single-widget">
-                  <h2>About Shopper</h2>
-                  <form action="/managenewsletter"method="post" class="searchform"> {% csrf_token %}
-                    <input type="email" name="email" placeholder="Your email address" required/>
-                    <button type="submit" class="btn btn-default">
-                      <i class="fa fa-arrow-circle-o-right"></i>
-                    </button>
-                    <p>
-                      Get the most recent updates from <br />our site and be
-                      updated your self...
-                    </p>
-                  </form>
-                </div>
+      <!--Footer-->
+
+      <div class="footer-widget">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-2">
+              <div class="single-widget">
+                <h2>Service</h2>
+                <ul class="nav nav-pills nav-stacked">
+                  <li><a href="#">Online Help</a></li>
+                  <li><a href="#">Contact Us</a></li>
+                 
+                </ul>
               </div>
             </div>
-          </div>
-        </div>
-  
-        <div class="footer-bottom">
-          <div class="container">
-            <div class="row">
-              <p class="pull-left">
-                Copyright © 2023 Tulsi Mala All rights reserved.
-              </p>
-              <p class="pull-right">
-                Designed and Developed by
-                <span
-                  ><a href="https://www.linkedin.com/in/sparsh-agarwal-a74128138/"
-                    >Sparsh Agarwal</a
-                  > and <a href="https://www.linkedin.com/in/tanishq-soni-899146214/">Tanishq Soni</a></span
+            <div class="col-sm-2">
+              <div class="single-widget">
+                <h2>Quock Shop</h2>
+                <ul class="nav nav-pills nav-stacked">
+                  <li><a href="#">T-Shirt</a></li>
+                  <li><a href="#">Mens</a></li>
+                  <li><a href="#">Womens</a></li>
+                  <li><a href="#">Gift Cards</a></li>
+                  <li><a href="#">Shoes</a></li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-sm-2">
+              <div class="single-widget">
+                <h2>Policies</h2>
+                <ul class="nav nav-pills nav-stacked">
+                  <li><a href="#">Terms of Use</a></li>
+                  <li><a href="#">Privecy Policy</a></li>
+                  <li><a href="#">Refund Policy</a></li>
+                  <li><a href="#">Billing System</a></li>
+                  <li><a href="#">Ticket System</a></li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-sm-2">
+              <div class="single-widget">
+                <h2>About Shopper</h2>
+                <ul class="nav nav-pills nav-stacked">
+                  <li><a href="#">Company Information</a></li>
+                  <li><a href="#">Careers</a></li>
+                  <li><a href="#">Store Location</a></li>
+                  <li><a href="#">Affillate Program</a></li>
+                  <li><a href="#">Copyright</a></li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-sm-3 col-sm-offset-1">
+              <div class="single-widget">
+                <h2>About Shopper</h2>
+                <form
+                  action="/managenewsletter"
+                  method="post"
+                  class="searchform"
                 >
-              </p>
+                  {% csrf_token %}
+                  <input
+                    type="email"
+                    name="email"
+                    placeholder="Your email address"
+                    required
+                  />
+                  <button type="submit" class="btn btn-default">
+                    <i class="fa fa-arrow-circle-o-right"></i>
+                  </button>
+                  <p>
+                    Get the most recent updates from <br />our site and be
+                    updated your self...
+                  </p>
+                </form>
+              </div>
             </div>
           </div>
         </div>
-      </footer>
-      <!--/Footer-->
-  
-      <script src="{% static 'js/jquery.js' %}"></script>
-      <script src="{% static 'js/bootstrap.min.js' %}"></script>
-      <script src="{% static 'js/jquery.scrollUp.min.js' %}"></script>
-      <script src="{% static 'js/price-range.js' %}"></script>
-      <script src="{% static 'js/jquery.prettyPhoto.js' %}"></script>
-      <script src="{% static 'js/main.js' %}"></script>
-    </body>
-  </html>
-  
+      </div>
+
+      <div class="footer-bottom">
+        <div class="container">
+          <div class="row">
+            <p class="pull-left">
+              Copyright © 2023 Tulsi Mala All rights reserved.
+            </p>
+            <p class="pull-right">
+              Designed and Developed by
+              <span
+                ><a href="https://www.linkedin.com/in/sparsh-agarwal-a74128138/"
+                  >Sparsh Agarwal</a
+                >
+                and
+                <a href="https://www.linkedin.com/in/tanishq-soni-899146214/"
+                  >Tanishq Soni</a
+                ></span
+              >
+            </p>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <!--/Footer-->
+
+    <script src="{% static 'js/jquery.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/jquery.scrollUp.min.js' %}"></script>
+    <script src="{% static 'js/price-range.js' %}"></script>
+    <script src="{% static 'js/jquery.prettyPhoto.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+  </body>
+</html>

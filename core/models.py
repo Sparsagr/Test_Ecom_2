@@ -125,6 +125,12 @@ class Cart(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)
+    firstname = models.CharField(max_length=25, blank=True, null=True)
+    lastname = models.CharField(max_length=25, blank=True, null=True)
+    Address = models.CharField(max_length=1000, blank=True, null=True)
+    country = models.CharField(max_length=100, blank=True, null=True)
+    zip_code = models.IntegerField(blank=True, null=True)
+    phone = models.IntegerField(blank=True, null=True)
 
     def set_quantity(self, quantity):
         self.quantity = quantity
@@ -155,7 +161,7 @@ class checkout(models.Model):
     street_adress = models.CharField(max_length=100)
     apartment_address = models.CharField(max_length=100)
     country = CountryField(multiple=False)
-    zip_code = models.CharField(max_length=100)
+    zip_code = models.CharField(max_length=15)
 
     def __str__(self):
         return self.user.username
