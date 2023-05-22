@@ -7,7 +7,7 @@ from core.forms import *
 from core.models import *
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, HttpResponseRedirect
 
 # Create your views here.
 
@@ -81,7 +81,28 @@ def checkout(request):
         for item in cart_items:
             total_price += int(item.quantity * item.product.price)
             cart_prod_and_price.append([item,(item.quantity * item.product.price)])
-        return render(request, 'core/checkout.html', {'order': order, 'len_of_cart': len_of_cart,'cart_prod_and_price':cart_prod_and_price, 'total_price':total_price})
+
+        if request.method == "POST" and request.POST.get('address'):
+            first_name = request.POST['first_name']
+            last_name = request.POST['last_name']
+            address = request.POST['address']
+            country = request.POST['country']
+            zip_code = request.POST['pincode']
+            phone = request.POST['phone']
+
+            # setting the cart model with delivery details
+
+            item = cart_items.first()
+            item.firstname = first_name
+            item.lastname = last_name
+            item.Address = address
+            item.country = country
+            item.zip_code = zip_code
+            item.phone = phone
+            item.save()
+            return redirect('/checkout')
+        item = cart_items.first()
+        return render(request, 'core/checkout.html', {'order': order, 'len_of_cart': len_of_cart,'cart_prod_and_price':cart_prod_and_price, 'total_price':total_price, 'item':item})
 
 def cart(request):
     if request.user.is_authenticated:

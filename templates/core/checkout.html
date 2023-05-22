@@ -22,30 +22,31 @@
 
         <div class="shopper-informations">
           <div class="row">
-            
-              
-            
             <div class="col-sm-12 clearfix">
               <div class="bill-to">
                 <p>Delievery details</p>
                 <div class="form-one">
-                  <form>
-                    
-                    
-                    
-                    <input type="text" placeholder="First Name *" />
-                    
-                    <input type="text" placeholder="Last Name *" />
-                    <input type="text" placeholder="Address 1 *" />
-                    
-                 
-                    <input type="text" placeholder=" Country " />
-                    
-                    
-                    <input type="number" placeholder="Zip / Postal Code *" />
-                    <input type="text" placeholder="Phone *" />
+                  {% if item.Address %}
+                  <form method="post"> {% csrf_token %}
+                    <input type="text" name="first_name" placeholder="First Name *" value="{{item.firstname}}" />
+                    <input type="text" name="last_name" placeholder="Last Name *" value="{{item.lastname}}" />
+                    <input type="text" name="address" placeholder="Address 1 *" value="{{item.Address}}" />
+                    <input type="text" name="country" placeholder=" Country " value="{{item.country}}" />
+                    <input type="number" name="pincode" placeholder="Zip / Postal Code *" value="{{item.zip_code}}" />
+                    <input type="text" name="phone" placeholder="Phone *" value="{{item.phone}}" />
                     <input type="submit" value="submit" class="btn" style="background: #FE980F; color: white;">
                   </form>
+                  {% else %}
+                  <form method="post"> {% csrf_token %}
+                    <input type="text" name="first_name" placeholder="First Name *" />
+                    <input type="text" name="last_name" placeholder="Last Name *" />
+                    <input type="text" name="address" placeholder="Address 1 *" />
+                    <input type="text" name="country" placeholder=" Country " />
+                    <input type="number" name="pincode" placeholder="Zip / Postal Code *" />
+                    <input type="text" name="phone" placeholder="Phone *" />
+                    <input type="submit" value="submit" class="btn" style="background: #FE980F; color: white;">
+                  </form>
+                  {% endif %}
                 </div>
               </div>
             </div>
@@ -104,12 +105,24 @@
             </tbody>
           </table>
           <div class="proc-to-pay" style="border-top: 2px solid grey; display: flex; flex-direction: column;">
-            <a href="/checkout" class="btn" style="background: #FE980F; border: none; margin: 1rem 0; color: white; padding: 0.4rem ">Proceed To Buy Rs. {{ total_price }}</a>
+            <a href="/checkout" id="proc_to_pay" class="btn" style="background: #FE980F; border: none; margin: 1rem 0; color: white; padding: 0.4rem ">Proceed To Buy Rs. {{ total_price }}</a>
           </div>
         </div>
        
       </div>
     </section>
+
+    <script>
+      document.getElementById('proc_to_pay').addEventListener('click', function(event){
+        if (document.getElementsByName('first_name')[0].value == '' || document.getElementsByName('last_name')[0].value == '' || document.getElementsByName('address')[0].value == '' || document.getElementsByName('country')[0].value == '' || document.getElementsByName('pincode')[0].value == '' || document.getElementsByName('phone')[0].value == ''){
+          alert('Please fill the delivery details first');
+          event.preventDefault();
+        }
+        else{
+          // payment gateway code
+        }
+      })
+    </script>
     <!--/#cart_items-->
 
     {% endblock %}
