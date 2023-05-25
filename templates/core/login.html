@@ -6,6 +6,14 @@
     <section id="form">
       <!--form-->
       <div class="container">
+        {% if messages %}
+        <ul class="messages" style="background: #FE980F; border-radius: 5px; display: flex; justify-content: space-between;    padding: 0.5rem 1rem;
+        color: white;">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li> <button style="background: none;" id="remove_message">X</button>
+            {% endfor %}
+        </ul>
+        {% endif %}
         <div class="row">
           <div class="col-sm-4 col-sm-offset-1">
             <div class="login-form">
@@ -48,4 +56,9 @@
     </section>
     <!--/form-->
 
+    <script>
+      document.getElementById("remove_message").addEventListener("click", () => {
+        document.querySelector(".messages").style.display = "none";
+      });
+    </script>
     {% endblock %}
