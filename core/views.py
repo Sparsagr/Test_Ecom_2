@@ -6,9 +6,15 @@ from django.shortcuts import render, redirect
 from core.forms import *
 from core.models import *
 from django.utils import timezone
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, HttpResponseRedirect
+from django.views.decorators.csrf import csrf_exempt
+import razorpay
 
+
+razorpay_client = razorpay.Client(
+    auth=(settings.RAZORPAY_ID, settings.RAZORPAY_SECRET))
 # Create your views here.
 
 
@@ -57,22 +63,26 @@ def add_product(request):
         form = ProductForm()
     return render(request, 'core/add_product.html', {'form': form})
 
+
 @login_required(login_url='user_login')
 def checkout(request):
     if Cart.objects.filter(user=request.user).exists():
         order = Order.objects.get(user=request.user, ordered=False)
         cart_items = Cart.objects.filter(user=request.user)
         len_of_cart = len(Cart.objects.filter(user=request.user))
-        if request.method == "POST" and request.POST.get('quantity',False):
+        if request.method == "POST" and request.POST.get('quantity', False):
             quantity = int(request.POST['quantity'])
-            product_slug_filter = request.POST.get('prod-slug',"none")
-            inst_product = Product.objects.filter(slug=product_slug_filter).first()
+            product_slug_filter = request.POST.get('prod-slug', "none")
+            inst_product = Product.objects.filter(
+                slug=product_slug_filter).first()
             if inst_product:
-                cart_item = Cart.objects.filter(user=request.user, product=inst_product).first()
-                order_item = OrderItem.objects.filter(user=request.user, product=inst_product).first()
+                cart_item = Cart.objects.filter(
+                    user=request.user, product=inst_product).first()
+                order_item = OrderItem.objects.filter(
+                    user=request.user, product=inst_product).first()
                 if cart_item and order_item:
                     cart_item.set_quantity(quantity)
-                    order_item.set_quantity(quantity)	
+                    order_item.set_quantity(quantity)
                     cart_item.save()
                     order_item.save()
                     return redirect('/cart')
@@ -80,8 +90,31 @@ def checkout(request):
         total_price = 0
         for item in cart_items:
             total_price += int(item.quantity * item.product.price)
-            cart_prod_and_price.append([item,(item.quantity * item.product.price)])
-        return render(request, 'core/checkout.html', {'order': order, 'len_of_cart': len_of_cart,'cart_prod_and_price':cart_prod_and_price, 'total_price':total_price})
+            cart_prod_and_price.append(
+                [item, (item.quantity * item.product.price)])
+
+        if request.method == "POST" and request.POST.get('address'):
+            first_name = request.POST['first_name']
+            last_name = request.POST['last_name']
+            address = request.POST['address']
+            country = request.POST['country']
+            zip_code = request.POST['pincode']
+            phone = request.POST['phone']
+
+            # setting the cart model with delivery details
+
+            item = cart_items.first()
+            item.firstname = first_name
+            item.lastname = last_name
+            item.Address = address
+            item.country = country
+            item.zip_code = zip_code
+            item.phone = phone
+            item.save()
+            return redirect('/checkout')
+        item = cart_items.first()
+        return render(request, 'core/checkout.html', {'order': order, 'len_of_cart': len_of_cart, 'cart_prod_and_price': cart_prod_and_price, 'total_price': total_price, 'item': item})
+
 
 def cart(request):
     if request.user.is_authenticated:
@@ -89,23 +122,27 @@ def cart(request):
             order = Order.objects.get(user=request.user, ordered=False)
             cart_items = Cart.objects.filter(user=request.user)
             len_of_cart = len(Cart.objects.filter(user=request.user))
-            if request.method == "POST" and request.POST.get('quantity',False):
+            if request.method == "POST" and request.POST.get('quantity', False):
                 quantity = int(request.POST['quantity'])
-                product_slug_filter = request.POST.get('prod-slug',"none")
-                inst_product = Product.objects.filter(slug=product_slug_filter).first()
+                product_slug_filter = request.POST.get('prod-slug', "none")
+                inst_product = Product.objects.filter(
+                    slug=product_slug_filter).first()
                 if inst_product:
-                    cart_item = Cart.objects.filter(user=request.user, product=inst_product).first()
-                    order_item = OrderItem.objects.filter(user=request.user, product=inst_product).first()
+                    cart_item = Cart.objects.filter(
+                        user=request.user, product=inst_product).first()
+                    order_item = OrderItem.objects.filter(
+                        user=request.user, product=inst_product).first()
                     if cart_item and order_item:
                         cart_item.set_quantity(quantity)
-                        order_item.set_quantity(quantity)	
+                        order_item.set_quantity(quantity)
                         cart_item.save()
                         order_item.save()
                         return redirect('/cart')
             cart_prod_and_price = []
             for item in cart_items:
-                cart_prod_and_price.append([item,(item.quantity * item.product.price)])
-            return render(request, 'core/cart.html', {'order': order, 'len_of_cart': len_of_cart,'cart_prod_and_price':cart_prod_and_price})
+                cart_prod_and_price.append(
+                    [item, (item.quantity * item.product.price)])
+            return render(request, 'core/cart.html', {'order': order, 'len_of_cart': len_of_cart, 'cart_prod_and_price': cart_prod_and_price})
         len_of_cart = len(Cart.objects.filter(user=request.user))
         return render(request, 'core/cart.html', {'message': "Your cart is empty", 'len_of_cart': len_of_cart})
     return redirect("/accounts/user_login")
@@ -251,3 +288,101 @@ def search(request):
     params = {"products": filtered_prods,
               'query': query, 'categories': categories, }
     return render(request, "core/shop.html", params)
+
+
+def payment(request):
+    try:
+        order = Order.objects.get(user=request.user, ordered=False)
+        address = checkout.objects.get(user=request.user)
+        order_amount = order.get_total_price()
+        order_currency = "INR"
+        order_receipt = order.order_id
+        notes = {
+            "street_address": address.street_address,
+            "apartment_address": address.apartment_address,
+            "country": address.country.name,
+            "zip": address.zip,
+        }
+        razorpay_order = razorpay_client.order.create(
+            dict(
+                amount=order_amount * 100,
+                currency=order_currency,
+                receipt=order_receipt,
+                notes=notes,
+                payment_capture="0",
+            )
+        )
+
+        print(razorpay_order["id"])
+        order.razorpay_order_id = razorpay_order["id"]
+        order.save()
+        print("it should render the summary page")
+
+        return render(
+            request,
+            "checkout.html",
+            {
+                "order": order,
+                "order_id": razorpay_order["id"],
+                "orderId": order.order_id,
+                "final_price": order_amount,
+                "razorpay_merchant_id": settings.RAZORPAY_ID,
+
+            }
+        )
+
+    except Order.DoesNotExist:
+        print("Order not Found")
+        return HttpResponse("404 error")
+    
+@csrf_exempt
+def handlerequest(request):
+    try:
+        payment_id = request.POST.get("razorpay_payment_id", "")
+        order_id = request.POST.get("razorpay_order_id", "")
+        signature = request.POST.get("razorpay_signature", "")
+        print(payment_id,order_id,signature)
+        params_dict = {
+            "razorpay_order_id": order_id,
+            "razorpay_payment_id": payment_id,
+            "razorpay_signature": signature,
+        }
+        try:
+            order_db = Order.objects.get(razorpay_order_id=order_id)
+            print("order found")
+        except:
+            print("order not found")
+            return HttpResponse("505 not found")
+        order_db.razorpay_payment_id = payment_id
+        order_db.razorpay_signature = signature
+        order_db.save()
+        print("working............")
+        result = razorpay_client.utility.verify_paymen_signature(params_dict)
+        if result == None:
+            print("woring finally fine.........")
+            amount = order_db.get_total_price()
+            amount = amount * 100
+            payment_status = razorpay_client.payment.capture(payment_id, amount)
+            if payment_status is not None:
+                print(payment_status)
+                order_db.ordered = True
+                order_db.save()
+                print("Payment success")
+                request.session[
+                    "order_failed"
+
+                ] = "Unfortunately your order could not be placed, try again"
+                return redirect("/")
+            else:
+                order_db.ordered = False
+                order_db.save()
+                return render(request, "paymentfailed.html")
+    except:
+        return HttpResponse("Error occured")
+
+                
+               
+
+
+    
+

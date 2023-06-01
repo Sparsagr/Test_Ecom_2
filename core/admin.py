@@ -10,7 +10,7 @@ class CustomerAdmin(admin.ModelAdmin):
 
 
 admin.site.register((Category, Offer, Order, OrderItem, Cart,
-                    ContactUs, Newsletter, Reviews, checkout))
+                    ContactUs, Newsletter, Reviews, checkout, Profile))
 
 
 class ReviewInline(admin.StackedInline):
