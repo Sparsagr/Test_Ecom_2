@@ -8,8 +8,8 @@
         <li class="active">Shopping Cart</li>
       </ol>
     </div>
+    {% if not message %} 
     <div class="table-responsive cart_info" style="border: 2px solid grey; display: flex; flex-direction: column;">
-      {% if not message %}
       <table class="table table-condensed">
         <thead>
           <tr class="cart_menu">
@@ -23,22 +23,22 @@
         </thead>
         <tbody>
           {% for items in cart_prod_and_price %}
-            <tr>
-              <td class="cart_product">
-                <a href=""><img style="width: 15rem" src="{{ items.0.product.img.url }}" alt=""/></a>
-              </td>
-              <td class="cart_description">
-                <h4><a href="">{{ items.0.product }}</a></h4>
-              </td>
-              <td class="cart_price">
-                <p>Rs.</p>
-                {{ items.0.product.price }}
-              </td>
-              <td class="cart_quantity">
-                <form method="post" class="cart_quantity_button"> {% csrf_token %}
-                  <a class="cart_quantity_up plus-btn" style="cursor: pointer; user-select: none;" data-item-id="{{ items.0.pk }}">+</a>
-                  {% if quantity and items.0.product.slug == inst_product %}
-                  <input class="cart_quantity_input" type="text" name="quantity" value="{{quantity}}" readonly autocomplete="off" size="2"/>
+          <tr>
+            <td class="cart_product">
+              <a href=""><img style="width: 15rem" src="{{ items.0.product.img.url }}" alt=""/></a>
+            </td>
+            <td class="cart_description">
+              <h4><a href="">{{ items.0.product }}</a></h4>
+            </td>
+            <td class="cart_price">
+              <p>Rs.</p>
+              {{ items.0.product.price }}
+            </td>
+            <td class="cart_quantity">
+              <form method="post" class="cart_quantity_button"> {% csrf_token %}
+                <a class="cart_quantity_up plus-btn" style="cursor: pointer; user-select: none;" data-item-id="{{ items.0.pk }}">+</a>
+                {% if quantity and items.0.product.slug == inst_product %}
+                <input class="cart_quantity_input" type="text" name="quantity" value="{{quantity}}" readonly autocomplete="off" size="2"/>
                   {% else %}
                   <input class="cart_quantity_input" type="text" name="quantity" value="{{ items.0.quantity }}" readonly autocomplete="off" size="2"/>
                   {% endif %}
@@ -55,16 +55,18 @@
                 <a class="cart_quantity_delete" href="/remove_cart_items/{{ items.0.pk }}"><i class="fa fa-times"></i></a>
               </td>
             </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-      <div class="proc-to-pay" style="border-top: 2px solid grey; display: flex; flex-direction: column;">
-        <a href="/checkout" class="btn" style="background: #FE980F; border: none; margin: 1rem 0; color: white; padding: 0.4rem ">Proceed To Buy</a>
+            {% endfor %}
+          </tbody>
+        </table>
+        <div class="proc-to-pay" style="border-top: 2px solid grey; display: flex; flex-direction: column;">
+          <a href="/checkout" class="btn" style="background: #FE980F; border: none; margin: 1rem 0; color: white; padding: 0.4rem ">Proceed To Buy</a>
+        </div>
       </div>
       {% else %}
-      <h3 style="text-align: center">{{message}}</h3>
-      {% endif %}
-    </div>
+      <div class="table-responsive cart_info" style="border: 2px solid grey; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 38vh;">
+        <h3>{{message}}</h3>
+      </div>
+    {% endif %}
   </div>
 </section>
 <script>
