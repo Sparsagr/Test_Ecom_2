@@ -111,8 +111,97 @@ def checkout(request):
             item.zip_code = zip_code
             item.phone = phone
             item.save()
-            return redirect('/checkout')
+            
+
+            # Payment Gateway
+
+            try:
+                order = Order.objects.get(user=request.user, ordered=False)
+                # address = checkout.objects.get(user=request.user)
+                order_currency = "INR"
+                order_receipt = order.order_id
+                # notes = {
+                #     "street_address": address.street_address,
+                #     "apartment_address": address.apartment_address,
+                #     "country": address.country.name,
+                #     "zip": address.zip,
+                # }
+                razorpay_order = razorpay_client.order.create(
+                    dict(
+                        amount=total_price * 100,
+                        currency=order_currency,
+                        receipt=order_receipt,
+                        payment_capture="0",
+                    )
+                )
+
+                print(razorpay_order["id"])
+                order.razorpay_order_id = razorpay_order["id"]
+                order.save()
+                print("it should render the summary page")
+
+                return render(
+                    request,
+                    "core/checkout.html",
+                    {
+                        "order": order,
+                        "order_id": razorpay_order["id"],
+                        "orderId": order.order_id,
+                        "final_price": total_price,
+                        "razorpay_merchant_id": settings.RAZORPAY_ID,
+                        'len_of_cart': len_of_cart, 
+                        'cart_prod_and_price': cart_prod_and_price, 
+                        'total_price': total_price, 
+                        'item': item
+                    }
+                )
+
+            except Order.DoesNotExist:
+                print("Order not Found")
+                return HttpResponse("404 error")
+            
+            # return redirect('/checkout')
+
         item = cart_items.first()
+        if item.country:
+            try:
+                order = Order.objects.get(user=request.user, ordered=False)
+                order_currency = "INR"
+                order_receipt = order.order_id
+                razorpay_order = razorpay_client.order.create(
+                    dict(
+                        amount=total_price * 100,
+                        currency=order_currency,
+                        receipt=order_receipt,
+                        payment_capture="0",
+                    )
+                )
+
+                print(razorpay_order["id"])
+                order.razorpay_order_id = razorpay_order["id"]
+                order.save()
+                print("it should render the summary page")
+
+                return render(
+                    request,
+                    "core/checkout.html",
+                    {
+                        "order": order,
+                        "order_id": razorpay_order["id"],
+                        "orderId": order.order_id,
+                        "final_price": total_price,
+                        "razorpay_merchant_id": settings.RAZORPAY_ID,
+                        'len_of_cart': len_of_cart, 
+                        'cart_prod_and_price': cart_prod_and_price, 
+                        'total_price': total_price, 
+                        'item': item
+                    }
+                )
+
+            except Order.DoesNotExist:
+                print("Order not Found")
+                return HttpResponse("404 error")
+
         return render(request, 'core/checkout.html', {'order': order, 'len_of_cart': len_of_cart, 'cart_prod_and_price': cart_prod_and_price, 'total_price': total_price, 'item': item})
 
 
@@ -289,51 +378,6 @@ def search(request):
               'query': query, 'categories': categories, }
     return render(request, "core/shop.html", params)
 
-
-def payment(request):
-    try:
-        order = Order.objects.get(user=request.user, ordered=False)
-        address = checkout.objects.get(user=request.user)
-        order_amount = order.get_total_price()
-        order_currency = "INR"
-        order_receipt = order.order_id
-        notes = {
-            "street_address": address.street_address,
-            "apartment_address": address.apartment_address,
-            "country": address.country.name,
-            "zip": address.zip,
-        }
-        razorpay_order = razorpay_client.order.create(
-            dict(
-                amount=order_amount * 100,
-                currency=order_currency,
-                receipt=order_receipt,
-                notes=notes,
-                payment_capture="0",
-            )
-        )
-
-        print(razorpay_order["id"])
-        order.razorpay_order_id = razorpay_order["id"]
-        order.save()
-        print("it should render the summary page")
-
-        return render(
-            request,
-            "checkout.html",
-            {
-                "order": order,
-                "order_id": razorpay_order["id"],
-                "orderId": order.order_id,
-                "final_price": order_amount,
-                "razorpay_merchant_id": settings.RAZORPAY_ID,
-
-            }
-        )
-
-    except Order.DoesNotExist:
-        print("Order not Found")
-        return HttpResponse("404 error")
     
 @csrf_exempt
 def handlerequest(request):
