@@ -61,11 +61,6 @@ class Reviews(models.Model):
     def __str__(self) -> str:
         return self.name
 
-
-class Offer(models.Model):
-    image = models.ImageField(upload_to="offers/")
-
-
 class OrderItem(models.Model):
     user = models.ForeignKey(User,
                              on_delete=models.CASCADE)
