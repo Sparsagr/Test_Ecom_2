@@ -148,14 +148,6 @@ class ContactUs(models.Model):
     def __str__(self) -> str:
         return self.message
 
-
-class Newsletter(models.Model):
-    email = models.EmailField()
-
-    def __str__(self) -> str:
-        return self.email
-
-
 class checkout(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     street_adress = models.CharField(max_length=100)

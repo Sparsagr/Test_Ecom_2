@@ -24,13 +24,13 @@ def index(request):
     f_new_prods = new_prods[0]
     new_prods = new_prods[1:3]
     categories = Category.objects.all()
-    offer = Offer.objects.get(id=1)
+    
     if (request.user.is_authenticated):
         len_of_cart = len(Cart.objects.filter(user=request.user))
         parameters = {
             'products': products,
             'categories': categories,
-            'offer': offer,
+            
             'len_of_cart': len_of_cart,
             'new_prods': new_prods,
             'f_items': f_new_prods
@@ -39,7 +39,6 @@ def index(request):
     parameters = {
         'products': products,
         'categories': categories,
-        'offer': offer,
         'new_prods': new_prods,
         'f_items': f_new_prods
     }
