@@ -20,3 +20,5 @@ class ReviewInline(admin.StackedInline):
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     inlines = [ReviewInline]
+
+admin.site.register(MyOrders)

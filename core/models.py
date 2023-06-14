@@ -125,6 +125,8 @@ class Cart(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)
+    isPaid = models.BooleanField(default=False)
+    orderID = models.CharField(max_length=150, blank=True , null=True)
     firstname = models.CharField(max_length=25, blank=True, null=True)
     lastname = models.CharField(max_length=25, blank=True, null=True)
     Address = models.CharField(max_length=1000, blank=True, null=True)
@@ -182,3 +184,9 @@ def send_email_token(sender, instance, created, **kwargs):
             send_Account_Activation_mail(email, email_token)
     except Exception as e:
         print(e)
+
+class MyOrders(models.Model):
+    user = models.ForeignKey(Profile , on_delete=models.CASCADE, related_name= "order")
+    order = models.ForeignKey(Cart , on_delete=models.CASCADE, related_name= "Cart")
+
+

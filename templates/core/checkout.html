@@ -107,6 +107,12 @@
           <div class="proc-to-pay" style="border-top: 2px solid grey; display: flex; flex-direction: column;">
             <a href="/checkout" id="rzp-button1" class="btn" style="background: #FE980F; border: none; margin: 1rem 0; color: white; padding: 0.4rem ">Proceed To Buy Rs. {{ total_price }}</a>
             <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+            <form id="handlerequest" action="{% url 'handlerequest' %}" method="post"> {% csrf_token %}
+              <input name="razorpay_order_id" value="{{order_id}}" type="hidden">
+              <input id="razorpay_payment_id" name="razorpay_payment_id" type="hidden">
+              <input id="razorpay_signature" name="razorpay_signature" type="hidden">
+            </form>
+            
 <script>
 var options = {
     "key": "{{razorpay_merchant_id}}", // Enter the Key ID generated from the Dashboard
@@ -115,7 +121,11 @@ var options = {
     "name": "Tulsi Mala", //your business name
     "description": "Test Transaction",
     "order_id": "{{order_id}}", //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
-    "callback_url": "{% url 'handlerequest' %}",
+    "handler": function(response){
+      document.getElementById("razorpay_payment_id").value = response.razorpay_payment_id
+      document.getElementById("razorpay_signature").value = response.razorpay_signature
+      document.getElementById("handlerequest").submit()
+    },
     "prefill": { //We recommend using the prefill parameter to auto-fill customer's contact information especially their phone number
         "name": "{{request.user.username}}", //your customer's name
         "email": "{{request.user.email}}",
@@ -126,7 +136,8 @@ var options = {
     },
     "theme": {
         "color": "#FE980F"
-    }
+    } 
+
 };
 var rzp1 = new Razorpay(options);
 document.getElementById('rzp-button1').onclick = function(e){

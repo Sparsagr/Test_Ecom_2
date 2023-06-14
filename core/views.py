@@ -10,6 +10,8 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_protect
+
 import razorpay
 
 
@@ -39,6 +41,7 @@ def index(request):
     parameters = {
         'products': products,
         'categories': categories,
+
         'new_prods': new_prods,
         'f_items': f_new_prods
     }
@@ -109,6 +112,7 @@ def checkout(request):
             item.country = country
             item.zip_code = zip_code
             item.phone = phone
+
             item.save()
             
 
@@ -138,6 +142,11 @@ def checkout(request):
                 order.razorpay_order_id = razorpay_order["id"]
                 order.save()
                 print("it should render the summary page")
+
+                if Cart.objects.filter(user=request.user).exists():
+                    cart = Cart.objects.filter(user=request.user).first()
+                    cart.orderID = razorpay_order["id"]
+                    cart.save()
 
                 return render(
                     request,
@@ -225,11 +234,13 @@ def cart(request):
                         order_item.set_quantity(quantity)
                         cart_item.save()
                         order_item.save()
+
                         return redirect('/cart')
             cart_prod_and_price = []
             for item in cart_items:
                 cart_prod_and_price.append(
                     [item, (item.quantity * item.product.price)])
+           
             return render(request, 'core/cart.html', {'order': order, 'len_of_cart': len_of_cart, 'cart_prod_and_price': cart_prod_and_price})
         len_of_cart = len(Cart.objects.filter(user=request.user))
         return render(request, 'core/cart.html', {'message': "Your cart is empty", 'len_of_cart': len_of_cart})
@@ -378,48 +389,60 @@ def search(request):
     return render(request, "core/shop.html", params)
 
     
-@csrf_exempt
+
 def handlerequest(request):
     try:
-        payment_id = request.POST.get("razorpay_payment_id", "")
-        order_id = request.POST.get("razorpay_order_id", "")
-        signature = request.POST.get("razorpay_signature", "")
-        print(payment_id,order_id,signature)
-        params_dict = {
-            "razorpay_order_id": order_id,
-            "razorpay_payment_id": payment_id,
-            "razorpay_signature": signature,
-        }
-        try:
-            order_db = Order.objects.get(razorpay_order_id=order_id)
-            print("order found")
-        except:
-            print("order not found")
-            return HttpResponse("505 not found")
-        order_db.razorpay_payment_id = payment_id
-        order_db.razorpay_signature = signature
-        order_db.save()
-        print("working............")
-        result = razorpay_client.utility.verify_paymen_signature(params_dict)
-        if result == None:
-            print("woring finally fine.........")
-            amount = order_db.get_total_price()
-            amount = amount * 100
-            payment_status = razorpay_client.payment.capture(payment_id, amount)
-            if payment_status is not None:
-                print(payment_status)
-                order_db.ordered = True
-                order_db.save()
-                print("Payment success")
-                request.session[
-                    "order_failed"
+        print(request.method)
+        if request.method == "POST":
+            print("enter1")
+            payment_id = request.POST.get("razorpay_payment_id", "")
+            print("enter2")
+            order_id = request.POST.get("razorpay_order_id", "")
+            print("enter3")
+            signature = request.POST.get("razorpay_signature", "")
+            print(payment_id,order_id,signature)
+            cart = Cart.objects.filter(orderID = order_id).first()
+            print("enter4")
+            if cart:
+                order = MyOrders(user = request.user, order = cart)
+                order.save()
+                cart.isPaid = True 
+                cart.save()
+            params_dict = {
+                "razorpay_order_id": order_id,
+                "razorpay_payment_id": payment_id,
+                "razorpay_signature": signature,
+            }
+            try:
+                order_db = Order.objects.get(razorpay_order_id=order_id)
+                print("order found")
+            except:
+                print("order not found")
+                return HttpResponse("505 not found")
+            order_db.razorpay_payment_id = payment_id
+            order_db.razorpay_signature = signature
+            order_db.save()
+            print("working............")
+            result = razorpay_client.utility.verify_paymen_signature(params_dict)
+            if result == None:
+                print("woring finally fine.........")
+                amount = order_db.get_total_price()
+                amount = amount * 100
+                payment_status = razorpay_client.payment.capture(payment_id, amount)
+                if payment_status is not None:
+                    print(payment_status)
+                    order_db.ordered = True
+                    order_db.save()
+                    print("Payment success")
+                    request.session[
+                        "order_failed"
 
-                ] = "Unfortunately your order could not be placed, try again"
-                return redirect("/")
-            else:
-                order_db.ordered = False
-                order_db.save()
-                return render(request, "paymentfailed.html")
+                    ] = "Unfortunately your order could not be placed, try again"
+                    return redirect("/")
+                else:
+                    order_db.ordered = False
+                    order_db.save()
+                    return render(request, "paymentfailed.html")
     except:
         return HttpResponse("Error occured")
 
