@@ -318,6 +318,8 @@ def products(request, slug):
         return render(request, "core/product-details.html", {'prodDescp': product, 'reviews': reviews, 'recommended_products': recommended_products})
 
     except Exception as e:
+        print(e)
+        print("Product not found")
         return HttpResponse("404 Not Found")
 
 
@@ -389,63 +391,69 @@ def search(request):
     return render(request, "core/shop.html", params)
 
     
-
-def handlerequest(request):
-    try:
-        print(request.method)
-        if request.method == "POST":
-            print("enter1")
-            payment_id = request.POST.get("razorpay_payment_id", "")
-            print("enter2")
-            order_id = request.POST.get("razorpay_order_id", "")
-            print("enter3")
-            signature = request.POST.get("razorpay_signature", "")
-            print(payment_id,order_id,signature)
-            cart = Cart.objects.filter(orderID = order_id).first()
-            print("enter4")
-            if cart:
-                order = MyOrders(user = request.user, order = cart)
-                order.save()
-                cart.isPaid = True 
-                cart.save()
-            params_dict = {
-                "razorpay_order_id": order_id,
-                "razorpay_payment_id": payment_id,
-                "razorpay_signature": signature,
-            }
-            try:
-                order_db = Order.objects.get(razorpay_order_id=order_id)
-                print("order found")
-            except:
-                print("order not found")
-                return HttpResponse("505 not found")
-            order_db.razorpay_payment_id = payment_id
-            order_db.razorpay_signature = signature
-            order_db.save()
-            print("working............")
-            result = razorpay_client.utility.verify_paymen_signature(params_dict)
-            if result == None:
-                print("woring finally fine.........")
-                amount = order_db.get_total_price()
-                amount = amount * 100
-                payment_status = razorpay_client.payment.capture(payment_id, amount)
-                if payment_status is not None:
+try:
+    def handlerequest(request):
+        try:
+            print(request.method)
+            if request.method == "POST":
+                print("enter1")
+                payment_id = request.POST.get("razorpay_payment_id", "")
+                print("enter2")
+                order_id = request.POST.get("razorpay_order_id", "")
+                print("enter3")
+                signature = request.POST.get("razorpay_signature", "")
+                print(payment_id,order_id,signature)
+                cart = Cart.objects.filter(orderID = order_id).first()
+                print("enter4")
+                if cart:
+                    profile_user = Profile.objects.filter(user = request.user).first()
+                    order = MyOrders(user = profile_user, order = cart)
+                    order.save()
+                    cart.isPaid = True 
+                    cart.save()
+                params_dict = {
+                    "razorpay_order_id": order_id,
+                    "razorpay_payment_id": payment_id,
+                    "razorpay_signature": signature,
+                }
+                try:
+                    order_db = Order.objects.get(razorpay_order_id=order_id)
+                    print("order found")
+                except:
+                    print("order not found")
+                    return HttpResponse("505 not found")
+                order_db.razorpay_payment_id = payment_id
+                order_db.razorpay_signature = signature
+                order_db.save()
+                print("working............")
+                result = razorpay_client.utility.verify_payment_signature(params_dict)
+                if not result == None:
+                    print("woring finally fine.........")
+                    amount = order_db.get_total_price()
+                    print(amount)
+                    # print(amount)
+                    payment_status = razorpay_client.payment.capture(payment_id, amount)
                     print(payment_status)
-                    order_db.ordered = True
-                    order_db.save()
-                    print("Payment success")
-                    request.session[
-                        "order_failed"
+                    if payment_status is not None:
+                        print(payment_status)
+                        order_db.ordered = True
+                        order_db.save()
+                        print("Payment success")
+                        request.session[
+                            "order_failed"
 
-                    ] = "Unfortunately your order could not be placed, try again"
-                    return redirect("/")
-                else:
-                    order_db.ordered = False
-                    order_db.save()
-                    return render(request, "paymentfailed.html")
-    except:
-        return HttpResponse("Error occured")
-
+                        ] = "Unfortunately your order could not be placed, try again"
+                        return redirect("/")
+                    else:
+                        order_db.ordered = False
+                        order_db.save()
+                        return render(request, "paymentfailed.html")
+        except Exception as e: 
+            print(e)
+            print("error occured")
+            return HttpResponse("Error occured")
+except Exception as e:
+    print(e)
                 
                
 
