@@ -9,16 +9,33 @@ class CustomerAdmin(admin.ModelAdmin):
                "date_joined", "groups", "user_permissions", "password")
 
 
-admin.site.register((Category, Order, OrderItem, Cart,
+admin.site.register((Category, Order, OrderItem, 
                     ContactUs, Reviews, checkout, Profile))
+
+class CartItemsInline(admin.StackedInline):
+    model = CartItems
+
+@admin.register(Cart)
+class CartAdmin(admin.ModelAdmin):
+    inlines = [CartItemsInline]
 
 
 class ReviewInline(admin.StackedInline):
     model = Reviews
 
+class ProductImageInline(admin.StackedInline):
+    model=ProductImage
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    inlines = [ReviewInline]
+    inlines = [ReviewInline, ProductImageInline]
 
-admin.site.register(MyOrders)
+
+
+
+class MyOrderItemInline(admin.StackedInline):
+    model=MyOrderItem
+
+@admin.register(MyOrders)
+class MyOrderAdmin(admin.ModelAdmin):
+    inlines = [MyOrderItemInline]

@@ -109,6 +109,8 @@
             <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
             <form id="handlerequest" action="{% url 'handlerequest' %}" method="post"> {% csrf_token %}
               <input name="razorpay_order_id" value="{{order_id}}" type="hidden">
+              <!-- <input name="razorpay_order_id" value="{{orderId}}" type="hidden"> -->
+              
               <input id="razorpay_payment_id" name="razorpay_payment_id" type="hidden">
               <input id="razorpay_signature" name="razorpay_signature" type="hidden">
             </form>

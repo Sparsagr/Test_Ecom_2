@@ -38,7 +38,8 @@ class Product(models.Model):
     desc = models.TextField()
     price = models.FloatField(default=0.0)
     product_available_count = models.IntegerField(default=0)
-    img = models.ImageField(upload_to='images/')
+    # img = models.ImageField(upload_to='images/')
+
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
@@ -49,6 +50,10 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+    
+class ProductImage(models.Model):
+    product = models.ForeignKey(Product,on_delete=models.CASCADE, related_name="prod_images")
+    image = models.ImageField(upload_to="product")
 
 
 class Reviews(models.Model):
@@ -123,8 +128,8 @@ class Order(models.Model):
 
 class Cart(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.IntegerField(default=1)
+    # product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    
     isPaid = models.BooleanField(default=False)
     orderID = models.CharField(max_length=150, blank=True , null=True)
     firstname = models.CharField(max_length=25, blank=True, null=True)
@@ -134,11 +139,29 @@ class Cart(models.Model):
     zip_code = models.IntegerField(blank=True, null=True)
     phone = models.IntegerField(blank=True, null=True)
 
-    def set_quantity(self, quantity):
-        self.quantity = quantity
+
+    def __str__(self) -> str:
+        return self.user.username
+
+    
 
     def get_quantity(self):
         return self.quantity
+class CartItems(models.Model):
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name="cart_items")
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True, blank=True)
+    quantity = models.IntegerField(default=0)
+
+    def get_subtotal(self):
+        if self.product is not None:
+            return self.product.price * self.quantity
+        return 0
+    
+
+    def __str__(self) -> str:
+        if self.product is not None:
+            return self.product.name + " by " + self.cart.user.username
+        return "No product by " + self.cart.user.username
 
 
 class ContactUs(models.Model):
@@ -188,5 +211,27 @@ def send_email_token(sender, instance, created, **kwargs):
 class MyOrders(models.Model):
     user = models.ForeignKey(Profile , on_delete=models.CASCADE, related_name= "order")
     order = models.ForeignKey(Cart , on_delete=models.CASCADE, related_name= "Cart")
+    order_date = models.DateTimeField( blank=True, null=True)
+
+
+    def get_total(self):
+        return sum([item.get_subtotal() for item in self.order_items.all()])
+        
+
+
+    
+
+
+
+class MyOrderItem(models.Model):
+    order = models.ForeignKey(MyOrders,on_delete=models.CASCADE, related_name="order_items")
+    product = models.ForeignKey(Product ,on_delete=models.CASCADE )
+    quantity = models.IntegerField( default= 1)
+    order_item_price = models.IntegerField(default=1)
+
+    def get_subtotal(self):
+        return self.quantity * self.order_item_price
+    
+
 
 

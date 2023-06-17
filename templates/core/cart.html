@@ -8,7 +8,7 @@
         <li class="active">Shopping Cart</li>
       </ol>
     </div>
-    {% if not message %} 
+    {% if len_of_cart %} 
     <div class="table-responsive cart_info" style="border: 2px solid grey; display: flex; flex-direction: column;">
       <table class="table table-condensed">
         <thead>
@@ -63,7 +63,7 @@
         </div>
       </div>
       {% else %}
-      <div class="table-responsive cart_info" style="border: 2px solid grey; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 38vh;">
+      <div class="table-responsive cart_info" style="border: 2px solid grey; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 41vh;">
         <h3>{{message}}</h3>
       </div>
     {% endif %}

@@ -28,7 +28,11 @@ def index(request):
     categories = Category.objects.all()
     
     if (request.user.is_authenticated):
-        len_of_cart = len(Cart.objects.filter(user=request.user))
+        cart = Cart.objects.filter(user = request.user, isPaid = False).first()
+        len_of_cart = 0
+        if cart:
+            len_of_cart = len(cart.cart_items.all())
+            print(len_of_cart)
         parameters = {
             'products': products,
             'categories': categories,
@@ -69,25 +73,32 @@ def add_product(request):
 @login_required(login_url='user_login')
 def checkout(request):
     if Cart.objects.filter(user=request.user).exists():
-        order = Order.objects.get(user=request.user, ordered=False)
-        cart_items = Cart.objects.filter(user=request.user)
-        len_of_cart = len(Cart.objects.filter(user=request.user))
+        order = Cart.objects.filter(user=request.user, isPaid=False).first()
+        cart = Cart.objects.filter(user=request.user).first()
+        cart_items = CartItems.objects.filter(cart = order)
+        # 
+        if (request.user.is_authenticated):
+            cart = Cart.objects.filter(user = request.user, isPaid = False).first()
+            len_of_cart = 0
+            if cart:
+                len_of_cart = len(cart.cart_items.all())
+                print(len_of_cart)
         if request.method == "POST" and request.POST.get('quantity', False):
             quantity = int(request.POST['quantity'])
             product_slug_filter = request.POST.get('prod-slug', "none")
             inst_product = Product.objects.filter(
                 slug=product_slug_filter).first()
-            if inst_product:
-                cart_item = Cart.objects.filter(
-                    user=request.user, product=inst_product).first()
-                order_item = OrderItem.objects.filter(
-                    user=request.user, product=inst_product).first()
-                if cart_item and order_item:
-                    cart_item.set_quantity(quantity)
-                    order_item.set_quantity(quantity)
-                    cart_item.save()
-                    order_item.save()
-                    return redirect('/cart')
+            # if inst_product:
+            #     cart_item = Cart.objects.filter(
+            #         user=request.user, product=inst_product).first()
+            #     order_item = OrderItem.objects.filter(
+            #         user=request.user, product=inst_product).first()
+            #     if cart_item and order_item:
+            #         cart_item.set_quantity(quantity)
+            #         order_item.set_quantity(quantity)
+            #         cart_item.save()
+            #         order_item.save()
+            #         return redirect('/cart')
         cart_prod_and_price = []
         total_price = 0
         for item in cart_items:
@@ -105,13 +116,15 @@ def checkout(request):
 
             # setting the cart model with delivery details
 
-            item = cart_items.first()
+            item = cart
             item.firstname = first_name
             item.lastname = last_name
             item.Address = address
             item.country = country
             item.zip_code = zip_code
             item.phone = phone
+            # item.orderID = razorpay_order["id"]
+
 
             item.save()
             
@@ -119,33 +132,29 @@ def checkout(request):
             # Payment Gateway
 
             try:
-                order = Order.objects.get(user=request.user, ordered=False)
+                order = Cart.objects.get(user=request.user, isPaid=False)
                 # address = checkout.objects.get(user=request.user)
                 order_currency = "INR"
-                order_receipt = order.order_id
-                # notes = {
-                #     "street_address": address.street_address,
-                #     "apartment_address": address.apartment_address,
-                #     "country": address.country.name,
-                #     "zip": address.zip,
-                # }
+                print("orderID === ",order.orderID)
+                # order_receipt = order.orderID
+                
                 razorpay_order = razorpay_client.order.create(
                     dict(
                         amount=total_price * 100,
                         currency=order_currency,
-                        receipt=order_receipt,
+                        # receipt=order_receipt,
                         payment_capture="0",
                     )
                 )
 
                 print(razorpay_order["id"])
-                order.razorpay_order_id = razorpay_order["id"]
+                order.orderID = razorpay_order["id"]
                 order.save()
                 print("it should render the summary page")
 
                 if Cart.objects.filter(user=request.user).exists():
                     cart = Cart.objects.filter(user=request.user).first()
-                    cart.orderID = razorpay_order["id"]
+                    # cart.orderID = razorpay_order["id"]
                     cart.save()
 
                 return render(
@@ -154,7 +163,7 @@ def checkout(request):
                     {
                         "order": order,
                         "order_id": razorpay_order["id"],
-                        "orderId": order.order_id,
+                        "orderId": order.orderID,
                         "final_price": total_price,
                         "razorpay_merchant_id": settings.RAZORPAY_ID,
                         'len_of_cart': len_of_cart, 
@@ -170,23 +179,23 @@ def checkout(request):
             
             # return redirect('/checkout')
 
-        item = cart_items.first()
+        item = cart
         if item.country:
             try:
-                order = Order.objects.get(user=request.user, ordered=False)
+                order = Cart.objects.filter(user=request.user, isPaid=False).first()
                 order_currency = "INR"
-                order_receipt = order.order_id
+                
                 razorpay_order = razorpay_client.order.create(
                     dict(
                         amount=total_price * 100,
                         currency=order_currency,
-                        receipt=order_receipt,
+                        
                         payment_capture="0",
                     )
                 )
 
                 print(razorpay_order["id"])
-                order.razorpay_order_id = razorpay_order["id"]
+                order.orderID= razorpay_order["id"]
                 order.save()
                 print("it should render the summary page")
 
@@ -196,7 +205,7 @@ def checkout(request):
                     {
                         "order": order,
                         "order_id": razorpay_order["id"],
-                        "orderId": order.order_id,
+                        "orderId": order.orderID,
                         "final_price": total_price,
                         "razorpay_merchant_id": settings.RAZORPAY_ID,
                         'len_of_cart': len_of_cart, 
@@ -210,38 +219,44 @@ def checkout(request):
                 print("Order not Found")
                 return HttpResponse("404 error")
 
-        return render(request, 'core/checkout.html', {'order': order, 'len_of_cart': len_of_cart, 'cart_prod_and_price': cart_prod_and_price, 'total_price': total_price, 'item': item})
+        return render(request, 'core/checkout.html', { 'len_of_cart': len_of_cart, 'cart_prod_and_price': cart_prod_and_price, 'total_price': total_price, 'item': item})
 
 
 def cart(request):
     if request.user.is_authenticated:
         if Cart.objects.filter(user=request.user).exists():
-            order = Order.objects.get(user=request.user, ordered=False)
-            cart_items = Cart.objects.filter(user=request.user)
-            len_of_cart = len(Cart.objects.filter(user=request.user))
+            order = Cart.objects.filter(user=request.user, isPaid=False).first()
+            cart_items = CartItems.objects.filter(cart=order)
+            if (request.user.is_authenticated):
+                cart = Cart.objects.filter(user = request.user, isPaid = False).first()
+                len_of_cart = 0
+                if cart:
+                    len_of_cart = len(cart.cart_items.all())
+                    print(len_of_cart)
+           
             if request.method == "POST" and request.POST.get('quantity', False):
                 quantity = int(request.POST['quantity'])
                 product_slug_filter = request.POST.get('prod-slug', "none")
                 inst_product = Product.objects.filter(
                     slug=product_slug_filter).first()
                 if inst_product:
-                    cart_item = Cart.objects.filter(
-                        user=request.user, product=inst_product).first()
-                    order_item = OrderItem.objects.filter(
-                        user=request.user, product=inst_product).first()
-                    if cart_item and order_item:
-                        cart_item.set_quantity(quantity)
-                        order_item.set_quantity(quantity)
+                    cart = Cart.objects.filter(
+                        user=request.user, isPaid= False).first()
+                    cart_item = CartItems.objects.filter(cart=cart, product = inst_product).first()
+                    if cart_item :
+                        cart_item.quantity = quantity
+                        
                         cart_item.save()
-                        order_item.save()
+                        
 
                         return redirect('/cart')
             cart_prod_and_price = []
             for item in cart_items:
+                print(item)
                 cart_prod_and_price.append(
                     [item, (item.quantity * item.product.price)])
            
-            return render(request, 'core/cart.html', {'order': order, 'len_of_cart': len_of_cart, 'cart_prod_and_price': cart_prod_and_price})
+            return render(request, 'core/cart.html', {'message': "Your cart is empty",'order': order, 'len_of_cart': len_of_cart, 'cart_prod_and_price': cart_prod_and_price})
         len_of_cart = len(Cart.objects.filter(user=request.user))
         return render(request, 'core/cart.html', {'message': "Your cart is empty", 'len_of_cart': len_of_cart})
     return redirect("/accounts/user_login")
@@ -254,39 +269,84 @@ def add_to_cart(request, pk):
         product = Product.objects.get(pk=pk)
 
         # create order item
-        order_item, created = OrderItem.objects.get_or_create(
-            product=product,
+        order_item, created = Cart.objects.get_or_create(
+            
             user=request.user,
-            ordered=False,
+            isPaid=False,
+            
         )
-
-    # get query set of order object of particular user
-        order_qs = Order.objects.filter(user=request.user, ordered=False)
-        if order_qs.exists():
-            order = order_qs[0]
-
-            if order.items.filter(product__pk=pk).exists():
-                order_item.quantity += 1
+        
+        all_cart_items = CartItems.objects.filter(cart=order_item).order_by("id")
+        print("all cart items are =>",all_cart_items)
+        
+        if all_cart_items :
+            print(product not in all_cart_items)
+            found = False
+            for item in all_cart_items:
+                if item.product.pk == product.pk:
+                    found = True
+                    break
+            if not found:
+                cart_items = CartItems.objects.create(cart=order_item, product=product, quantity=1)
+                cart_items.save()
                 order_item.save()
-                messages.info(request, "Added Quantity Item")
-
             else:
-                order.items.add(order_item)
+
+                for item in all_cart_items:
+                    print(item.product.pk, "and ", product.pk)
+
+                    if str(item.product.pk) == str(product.pk):
+                        if item.quantity == 0:
+                            cart_items = CartItems.objects.create(cart=order_item, product=product, quantity=1)
+                            cart_items.save()
+                            order_item.save()
+                            break
+                        else:
+                            item.quantity += 1
+                            item.save()
+                            order_item.save()
+                            break
 
         else:
-            ordered_date = timezone.now()
-            order = Order.objects.create(
-                user=request.user, ordered_date=ordered_date)
-            order.items.add(order.item)
+            cart_items = CartItems.objects.create(cart=order_item, product= product, quantity=1)
+            cart_items.save()
+            
 
-            product = get_object_or_404(pk, product__pk=pk)
-        cart_item, created = Cart.objects.get_or_create(
-            user=request.user,
-            product=product,
-        )
-        if not created:
-            cart_item.quantity += 1
-            cart_item.save()
+    # get query set of order object of particular user
+        # order_qs = Order.objects.filter(user=request.user, ordered=False)
+        # if order_qs.exists():
+        #     order = order_qs[0]
+
+        #     if order.items.filter(product__pk=pk).exists():
+        #         order_item.quantity += 1
+        #         order_item.save()
+        #         messages.info(request, "Added Quantity Item")
+
+        #     else:
+        #         order.items.add(order_item)
+
+        # else:
+        #     ordered_date = timezone.now()
+        #     order = Order.objects.create(
+        #         user=request.user, ordered_date=ordered_date)
+        #     order.items.add(order.item)
+
+        #     product = get_object_or_404(pk, product__pk=pk)
+        # print(len(all_cart_items))
+        # if len(all_cart_items) != 1 :
+        #     for cart_item in all_cart_items:
+        #         if cart_item.product.pk == product.pk:
+        #             if cart_item.quantity == 0:
+        #                 cart_item.quantity += 1
+        #                 cart_item.save()
+        #                 order_item.save()
+        #             else:
+        #                 cart_item.quantity += 1
+        #                 cart_item.save()
+        #                 cart_items.delete()
+        #                 order_item.save()
+                        
+            
 
         return redirect("cart")
     return redirect("/accounts/user_login")
@@ -296,6 +356,19 @@ def category(request, id):
     category = Category.objects.get(id=id)
     products = Product.objects.filter(category=category)
     categories = Category.objects.all()
+    if (request.user.is_authenticated):
+        cart = Cart.objects.filter(user = request.user, isPaid = False).first()
+        len_of_cart = 0
+        if cart:
+            len_of_cart = len(cart.cart_items.all())
+        parameters = {
+            "category": category,
+            "len_of_cart": len_of_cart,
+            "products": products,
+            'categories': categories
+        }
+        return render(request, "core/shop.html", parameters)
+
 
     parameters = {
         "category": category,
@@ -314,6 +387,9 @@ def products(request, slug):
         reviews = Reviews.objects.filter(product=product)
         if (request.user.is_authenticated):
             len_of_cart = len(Cart.objects.filter(user=request.user))
+            for prod in product.prod_images.all():
+                print(prod.image.url)
+
             return render(request, "core/product-details.html", {'len_of_cart': len_of_cart, 'prodDescp': product, 'reviews': reviews, 'recommended_products': recommended_products})
         return render(request, "core/product-details.html", {'prodDescp': product, 'reviews': reviews, 'recommended_products': recommended_products})
 
@@ -327,20 +403,32 @@ def shop(request):
     products = Product.objects.all()
     categories = Category.objects.all()
     if (request.user.is_authenticated):
-        len_of_cart = len(Cart.objects.filter(user=request.user))
+       
+       
+        cart = Cart.objects.filter(user = request.user, isPaid = False).first()
+        len_of_cart = 0
+        if cart:
+            len_of_cart = len(cart.cart_items.all())
+            print(len_of_cart)
         return render(request, "core/shop.html", {'len_of_cart': len_of_cart, 'products': products, 'categories': categories, })
     return render(request, "core/shop.html", {'products': products, 'categories': categories, })
 
 
 def contactus(request):
     if (request.user.is_authenticated):
-        len_of_cart = len(Cart.objects.filter(user=request.user))
+        # 
+        
+        cart = Cart.objects.filter(user = request.user, isPaid = False).first()
+        len_of_cart = 0
+        if cart:
+            len_of_cart = len(cart.cart_items.all())
+            print(len_of_cart)
         return render(request, "core/contact-us.html", {'len_of_cart': len_of_cart})
     return render(request, "core/contact-us.html")
 
 
 def remove_cart_items(request, pk):
-    cart_product = Cart.objects.filter(pk=pk)
+    cart_product = CartItems.objects.filter(pk=pk)
     cart_product.delete()
     return redirect('cart')
 
@@ -403,51 +491,52 @@ try:
                 print("enter3")
                 signature = request.POST.get("razorpay_signature", "")
                 print(payment_id,order_id,signature)
-                cart = Cart.objects.filter(orderID = order_id).first()
-                print("enter4")
-                if cart:
-                    profile_user = Profile.objects.filter(user = request.user).first()
-                    order = MyOrders(user = profile_user, order = cart)
-                    order.save()
-                    cart.isPaid = True 
-                    cart.save()
+                
                 params_dict = {
                     "razorpay_order_id": order_id,
                     "razorpay_payment_id": payment_id,
                     "razorpay_signature": signature,
                 }
                 try:
-                    order_db = Order.objects.get(razorpay_order_id=order_id)
+                    order_db = Cart.objects.filter(orderID=order_id).first()
                     print("order found")
-                except:
+                except Exception as e:
+                    print(e)
                     print("order not found")
                     return HttpResponse("505 not found")
-                order_db.razorpay_payment_id = payment_id
-                order_db.razorpay_signature = signature
-                order_db.save()
+                if order_db:
+                    
+                    order_db.razorpay_payment_id = payment_id
+                    order_db.razorpay_signature = signature
+                    order_db.save()
                 print("working............")
                 result = razorpay_client.utility.verify_payment_signature(params_dict)
                 if not result == None:
                     print("woring finally fine.........")
-                    amount = order_db.get_total_price()
-                    print(amount)
+                    # amount = order_db.get_total_price()
                     # print(amount)
-                    payment_status = razorpay_client.payment.capture(payment_id, amount)
-                    print(payment_status)
-                    if payment_status is not None:
-                        print(payment_status)
-                        order_db.ordered = True
+                    # print(amount)
+                    # payment_status = razorpay_client.payment.capture(payment_id, amount)
+                    # print(payment_status)
+                    # cart = Cart.objects.filter(orderID = order_id).first()
+                    print("enter4")
+                    if order_db:
+                        print("enter 5")
+                        profile_user = Profile.objects.filter(user = request.user).first()
+                        order = MyOrders(user = profile_user, order = order_db, order_date = timezone.now())
+                        
+                        order.save()
+                        for item in order_db.cart_items.all():
+                            order_item = MyOrderItem(order = order, product = item.product, quantity = item.quantity , order_item_price =item.product.price)
+                            order_item.save()
+                        order_db.isPaid = True 
                         order_db.save()
+                        # order_db.ordered = True
+                        # order_db.save()
                         print("Payment success")
-                        request.session[
-                            "order_failed"
-
-                        ] = "Unfortunately your order could not be placed, try again"
-                        return redirect("/")
-                    else:
-                        order_db.ordered = False
-                        order_db.save()
-                        return render(request, "paymentfailed.html")
+                    
+                    return redirect(f"/invoice/{order_id}/")
+                   
         except Exception as e: 
             print(e)
             print("error occured")
@@ -455,6 +544,12 @@ try:
 except Exception as e:
     print(e)
                 
+def generate_invoice(request, order_id):
+    cart = Cart.objects.filter(orderID = order_id).first()
+    user = Profile.objects.filter(user = request.user).first()
+    order= MyOrders.objects.filter(user= user, order = cart).first()
+    context={"order": order}
+    return render(request, "core/invoice.html", context)  
                
 
 

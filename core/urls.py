@@ -8,6 +8,7 @@ try:
         path('checkout', views.checkout, name='checkout'),
         path('cart', views.cart, name='cart'),
         path('contactus', views.contactus, name='contactus'),
+        path('invoice/<order_id>/',views.generate_invoice, name='generate_invoice'),
         path('managecontactus', views.managecontactus, name='managecontactus'),
         path('saveReview/<slug>', views.saveReview, name="saveReview"),
         path('search', views.search, name="search"),
