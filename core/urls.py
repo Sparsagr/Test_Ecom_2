@@ -18,4 +18,5 @@ urlpatterns = [
     path('remove_cart_items/<pk>', views.remove_cart_items,
          name="remove_cart_items"),
     path("handlerequest", views.handlerequest, name="handlerequest"),
+    path("invoice",views.invoice, name="invoice"),
 ]

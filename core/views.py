@@ -435,18 +435,30 @@ def handlerequest(request):
                     order_db.save()
                     print("Payment success")
                     request.session[
-                        "order_failed"
+                        "order_complete"
 
-                    ] = "Unfortunately your order could not be placed, try again"
-                    return redirect("/")
+                    ] = "Your Order is Succefully placed, You will receive your order within some days."
+                    return render(request, "core/invoice.html")
                 else:
+                    print("Payment Failed")
                     order_db.ordered = False
                     order_db.save()
-                    return render(request, "paymentfailed.html")
+                    request.session[
+                        "order_failed"
+                    ] = "Unfortunately your order could not be placed, try again!"
+                    return redirect("/")
+            else:
+                order_db.ordered = False
+                order_db.save()
+                return render(request, "core/paymentfailed.html")
     except:
         return HttpResponse("Error occured")
+    
 
-                
+def invoice(request):
+    return render(request, "core/invoice.html")
+
+                 
                
 
 
