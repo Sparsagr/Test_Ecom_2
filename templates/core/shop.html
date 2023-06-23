@@ -30,14 +30,14 @@
 				<div class="col-sm-9 padding-right">
 					<div class="features_items"><!--features_items-->
 						<h2 class="title text-center">Features Items</h2>
-						<div class="outer-box" style="display: flex; justify-content: space-around; flex-wrap: wrap;"></div>
+						<div class="outer-box" style="display: flex; justify-content: space-around; flex-wrap: wrap;">
 						{% if category %}
 							{% for item in products %}
 								<div class="col-sm-4">
 									<div class="product-image-wrapper">
 										<div class="single-products">
 											<div class="productinfo text-center">
-												<img src="/media/{{item.img}}" alt="" />
+												<img src="/media/{{ item.prod_images.first.image }}" alt="" />
 												<h2>${{item.price}}</h2>
 												<p>{{item.name}}</p>
 												<a href="{% url 'add_to_cart' item.pk %}" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
@@ -67,7 +67,7 @@
 									<div class="product-image-wrapper">
 										<div class="single-products">
 											<div class="productinfo text-center">
-												<img src="/media/{{item.img}}" alt="" />
+												<img src="/media/{{ item.prod_images.first.image }}" alt="" />
 												<h2>${{item.price}}</h2>
 												<p>{{item.name}}</p>
 												<a href="{% url 'add_to_cart' item.pk %}" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
@@ -94,7 +94,7 @@
 									<div class="product-image-wrapper">
 										<div class="single-products">
 											<div class="productinfo text-center">
-												<img src="/media/{{item.img}}" alt="" />
+												<img src="/media/{{ item.prod_images.first.image }}" alt="" />
 												<h2>${{item.price}}</h2>
 												<p>{{item.name}}</p>
 												<a href="{% url 'add_to_cart' item.pk %}" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>

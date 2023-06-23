@@ -67,6 +67,25 @@
             </div>
             <div class="col-sm-6">
               <div class="social-icons pull-right">
+                {% if productDetails %}
+               <ul style="display: block;" class="nav navbar-nav">
+                  <li>
+                    <a href="#"><i class="fa fa-facebook"></i></a>
+                  </li>
+                  <li>
+                    <a href="#"><i class="fa fa-twitter"></i></a>
+                  </li>
+                  <li>
+                    <a href="#"><i class="fa fa-linkedin"></i></a>
+                  </li>
+                  <li>
+                    <a href="#"><i class="fa fa-dribbble"></i></a>
+                  </li>
+                  <li>
+                    <a href="#"><i class="fa fa-google-plus"></i></a>
+                  </li>
+                </ul> 
+                {% else %}
                 <ul class="nav navbar-nav">
                   <li>
                     <a href="#"><i class="fa fa-facebook"></i></a>
@@ -83,7 +102,8 @@
                   <li>
                     <a href="#"><i class="fa fa-google-plus"></i></a>
                   </li>
-                </ul>
+                </ul> 
+                {% endif %}
               </div>
             </div>
           </div>
@@ -104,8 +124,44 @@
             </div>
             <div class="col-sm-8">
               <div class="shop-menu pull-right">
-                <ul class="nav navbar-nav">
-                  
+                {% if productDetails %}
+                <ul style="display: block; " class="nav navbar-nav"> 
+                  <li>
+                    <a href="/cart" style="text-decoration: none;"
+                      ><i class="fa fa-shopping-cart"></i> Cart&nbsp;&nbsp;
+                       {% if user.is_authenticated %}
+                      <div style="color: #fe980f; display: inline">
+                        ({{ len_of_cart }})
+                      </div>
+                      {% endif %}
+                    </a>
+                  </li>
+
+                  {% if user.is_authenticated %}
+
+                  <li>
+                    <a href=" /accounts/user_logout" style="text-decoration: none;"
+                      ><i class="fa fa-lock"></i> Logout</a
+                    >
+                  </li>
+                  <li>
+                    <h4 style="color: #fe980f;"> 
+                      <i class="fa fa-user"></i> {{ user.username|title }}
+                    </h4>
+                  </li>
+
+                  {% else %}
+
+                  <li>
+                    <a href=" /accounts/user_login" style="text-decoration: none;"
+                      ><i class="fa fa-lock"></i> Login</a
+                    >
+                  </li>
+
+                  {% endif %}
+                </ul>
+                {% else %}
+                <ul class="nav navbar-nav"> 
                   <li>
                     <a href="/cart"
                       ><i class="fa fa-shopping-cart"></i> Cart&nbsp;&nbsp;
@@ -140,6 +196,7 @@
 
                   {% endif %}
                 </ul>
+                {% endif %}
               </div>
             </div>
           </div>

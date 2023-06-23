@@ -9,7 +9,7 @@
       </ol>
     </div>
     {% if len_of_cart %} 
-    <div class="table-responsive cart_info" style="border: 2px solid grey; display: flex; flex-direction: column;">
+    <div class="table-responsive cart_info" style= "display: flex; flex-direction: column;">
       <table class="table table-condensed">
         <thead>
           <tr class="cart_menu">
@@ -25,7 +25,7 @@
           {% for items in cart_prod_and_price %}
           <tr>
             <td class="cart_product">
-              <a href=""><img style="width: 15rem" src="{{ items.0.product.img.url }}" alt=""/></a>
+              <a href=""><img style="width: 15rem" src="/media/{{ items.0.product.prod_images.first.image }}" alt=""/></a>
             </td>
             <td class="cart_description">
               <h4><a href="">{{ items.0.product }}</a></h4>

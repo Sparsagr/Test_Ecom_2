@@ -35,7 +35,7 @@
                   </div>
                   <div class="col-sm-6">
                     <img
-                      src="/media/{{f_items.img}}"
+                      src="/media/{{ f_items.prod_images.first.image }}"
                       class="girl img-responsive"
                       alt=""
                     />
@@ -53,7 +53,7 @@
                   </div>
                   <div class="col-sm-6">
                     <img
-                      src="/media/{{items.img}}"
+                      src="/media/{{ items.prod_images.first.image }}"
                       class="girl img-responsive"
                       alt=""
                     />
@@ -120,7 +120,7 @@
                   <div class="single-products">
                     <div class="productinfo text-center">
                       <img
-                        src="{{ product.img.url }}"
+                        src="/media/{{ product.prod_images.first.image }}"
                         alt=""
                       />
                       <h2>Rs. {{ product.price }}</h2>

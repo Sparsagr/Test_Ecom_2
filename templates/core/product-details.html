@@ -2,10 +2,10 @@
 {% load static %}
 {% load  cart_template_tag %}
 {% block extcss %} 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+<!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous"> -->
 {% endblock %}
 {% block extjs %}
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script> 
+<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>  -->
 {% endblock %}
 {% block start %}
     
@@ -19,7 +19,88 @@
 						<div class="col-sm-5">
 							<div class="view-product">
 								<!-- <img src="/media/{{prodDescp.img}}" alt="" /> -->
-								<div id="carouselExampleIndicators" class="carousel slide">
+								<section id="slider">
+									<!--slider-->
+									<div class="container">
+									  <div class="row">
+										<div class="col-sm-6">
+										  <div
+											id="slider-carousel"
+											class="carousel slide"
+											data-ride="carousel"
+										  >
+											<ol class="carousel-indicators">
+											  <li
+												data-target="#slider-carousel"
+												data-slide-to="0"
+												class="active"
+											  ></li>
+											  <li data-target="#slider-carousel" data-slide-to="1"></li>
+											  <li data-target="#slider-carousel" data-slide-to="2"></li>
+											</ol>
+							  
+											<div class="carousel-inner">
+											  <div class="item active">
+												<!-- <div class="col-sm-6">
+												  <h1>{{f_items.name}}</h1>
+												  <h2>{{f_items.category}}</h2>
+												  <p>
+												   {{f_items.desc|truncatechars:180 }}
+												  </p>
+												 
+												</div> -->
+												<div class="col-sm-12">
+												  <img
+													src="/media/{{ prodDescp.prod_images.first.image }}"
+													class="girl img-responsive"
+													alt=""
+												  />
+												</div>
+											  </div>
+											  {% for prod in prodDescp.prod_images.all %}
+											  {% if not prodDescp.prod_images.first.image == prod.image  %}
+											  <div class="item">
+												<!-- <div class="col-sm-6">
+												  <h1>{{items.name}}</h1>
+												  <h2>{{items.category}}</h2>
+												  <p>
+													{{f_items.desc|truncatechars:180 }}
+												  </p>
+												  
+												</div> -->
+												<div class="col-sm-12">
+												  <img
+													src="/media/{{ prod.image }}"
+													class="girl img-responsive"
+													alt=""
+												  />
+												</div>
+											  </div>
+											  {% endif %}
+											  {% endfor %}
+											</div>
+							  
+											<a
+											  href="#slider-carousel"
+											  class="left control-carousel hidden-xs"
+											  data-slide="prev"
+											>
+											  <i class="fa fa-angle-left"></i>
+											</a>
+											<a
+											  href="#slider-carousel"
+											  class="right control-carousel hidden-xs"
+											  data-slide="next"
+											>
+											  <i class="fa fa-angle-right"></i>
+											</a>
+										  </div>
+										</div>
+									  </div>
+									</div>
+								  </section>
+								  <!--/slider-->
+								<!-- <div id="carouselExampleIndicators" class="carousel slide">
 									<div class="carousel-indicators">
 									  <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
 									  <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
@@ -48,7 +129,7 @@
 									  <span class="carousel-control-next-icon" aria-hidden="true"></span>
 									  <span class="visually-hidden">Next</span>
 									</button>
-								  </div>
+								  </div> -->
 							</div>
 						</div>
 						<div class="col-sm-7">
@@ -102,6 +183,7 @@
 								<div class="col-sm-12">
 									{% if user.is_authenticated %}
 									<p><b>Write Your Review</b></p>
+									
 									<form action="/saveReview/{{prodDescp.slug}}" method="post"> {% csrf_token %}
 										<span>
 											<input type="text" name="name" placeholder="Your Name"/>
@@ -130,7 +212,7 @@
 										<div class="product-image-wrapper">
 											<div class="single-products">
 												<div class="productinfo text-center">
-													<img src="/media/{{item.img}}" alt="" />
+													<img src="/media/{{ item.prod_images.first.image }}" alt="" />
 													<h2>{{item.price}}</h2>
 													<p>{{item.name}}</p>
 													<a href="{% url 'add_to_cart' item.pk %}" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>

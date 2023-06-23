@@ -53,7 +53,9 @@ def user_register(request):
 
             return redirect("/accounts/user_login")
         except Exception as e:
-            return HttpResponse("Username or Email already exists!")
+            messages.error(
+                request, "Username or Email already exists!")
+            return render(request, "core/login.html")
 
     return render(request, "core/login.html")
 

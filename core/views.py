@@ -390,8 +390,8 @@ def products(request, slug):
             for prod in product.prod_images.all():
                 print(prod.image.url)
 
-            return render(request, "core/product-details.html", {'len_of_cart': len_of_cart, 'prodDescp': product, 'reviews': reviews, 'recommended_products': recommended_products})
-        return render(request, "core/product-details.html", {'prodDescp': product, 'reviews': reviews, 'recommended_products': recommended_products})
+            return render(request, "core/product-details.html", {'productDetails': True,'len_of_cart': len_of_cart, 'prodDescp': product, 'reviews': reviews, 'recommended_products': recommended_products})
+        return render(request, "core/product-details.html", {'productDetails': True,'prodDescp': product, 'reviews': reviews, 'recommended_products': recommended_products})
 
     except Exception as e:
         print(e)
