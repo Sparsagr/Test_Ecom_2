@@ -2519,3 +2519,13 @@ h2.title {
 }
 
 
+.FOOTER-ICONS {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.FOOTER-ICONS i {
+  font-size: 20px;
+  margin: 0 10px; /* Adjust the spacing between icons */
+}
