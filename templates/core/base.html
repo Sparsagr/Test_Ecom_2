@@ -2,308 +2,293 @@
 
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
-    <title>Home | E-Shopper</title>
-    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" />
-    <link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet" />
-    <link href="{% static 'css/prettyPhoto.css' %}" rel="stylesheet" />
-    <link href="{% static 'css/price-range.css' %}" rel="stylesheet" />
-    <link href="{% static 'css/animate.css' %}" rel="stylesheet" />
-    <link href="{% static 'css/main.css' %}" rel="stylesheet" />
-    <link href="{% static 'css/responsive.css' %}" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 
-    {% block extcss %} {% endblock %}
-    
-    <!--[if lt IE 9]>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="" />
+  <meta name="author" content="" />
+  <title>Tulsi Mala</title>
+  <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" />
+  <link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet" />
+  <link href="{% static 'css/prettyPhoto.css' %}" rel="stylesheet" />
+  <link href="{% static 'css/price-range.css' %}" rel="stylesheet" />
+  <link href="{% static 'css/animate.css' %}" rel="stylesheet" />
+  <link href="{% static 'css/main.css' %}" rel="stylesheet" />
+  <link href="{% static 'css/responsive.css' %}" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+  {% block extcss %} {% endblock %}
+
+  <!--[if lt IE 9]>
       <script src="js/html5shiv.js"></script>
       <script src="js/respond.min.js"></script>
     <![endif]-->
-    <link rel="shortcut icon" href="{% static 'images/ico/favicon.ico' %}" />
-    <link
-      rel="apple-touch-icon-precomposed"
-      sizes="144x144"
-      href="{% static 'images/ico/apple-touch-icon-144-precomposed.png' %}"
-    />
-    <link
-      rel="apple-touch-icon-precomposed"
-      sizes="114x114"
-      href="{% static 'images/ico/apple-touch-icon-114-precomposed.png' %}"
-    />
-    <link
-      rel="apple-touch-icon-precomposed"
-      sizes="72x72"
-      href="{% static 'images/ico/apple-touch-icon-72-precomposed.png' %}"
-    />
-    <link
-      rel="apple-touch-icon-precomposed"
-      href="{% static 'images/ico/apple-touch-icon-57-precomposed.png' %}"
-    />
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script></head
-  ><!--/head-->
+  <link rel="shortcut icon" href="{% static 'images/ico/favicon.ico' %}" />
+  <link rel="apple-touch-icon-precomposed" sizes="144x144"
+    href="{% static 'images/ico/apple-touch-icon-144-precomposed.png' %}" />
+  <link rel="apple-touch-icon-precomposed" sizes="114x114"
+    href="{% static 'images/ico/apple-touch-icon-114-precomposed.png' %}" />
+  <link rel="apple-touch-icon-precomposed" sizes="72x72"
+    href="{% static 'images/ico/apple-touch-icon-72-precomposed.png' %}" />
+  <link rel="apple-touch-icon-precomposed" href="{% static 'images/ico/apple-touch-icon-57-precomposed.png' %}" />
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head><!--/head-->
 
-  <body>
-    <header id="header">
-      <!--header-->
-      <div class="header_top">
-        <!--header_top-->
-        <div class="container">
-          <div class="row">
-            <div class="col-sm-6">
-              <div class="contactinfo">
-                <ul class="nav nav-pills">
-                  <li>
-                    <a href="#"><i class="fa fa-phone"></i> +91 7302677769</a>
-                  </li>
-                  <li>
-                    <a href="#"
-                      ><i class="fa fa-envelope"></i> rsmtulsikanthi@gmail.com</a
-                    >
-                  </li>
-                </ul>
-              </div>
+
+<body>
+  <header id="header">
+    <!--header-->
+    <div class="header_top">
+      <!--header_top-->
+      <div class="container">
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="contactinfo">
+              <ul class="nav nav-pills">
+                <li>
+                  <a href="#"><i class="fa fa-phone"></i> +91 7302677769</a>
+                </li>
+                <li>
+                  <a href="#"><i class="fa fa-envelope"></i> rsmtulsikanthi@gmail.com</a>
+                </li>
+              </ul>
             </div>
-            <div class="col-sm-6">
-              <div class="social-icons pull-right">
-                {% if productDetails %}
-               <ul style="display: block;" class="nav navbar-nav">
-                  <li>
-                    <a href="#"><i class="fa fa-facebook"></i></a>
-                  </li>
-                  <li>
-                    <a href="#"><i class="fa fa-twitter"></i></a>
-                  </li>
-                  <li>
-                    <a href="#"><i class="fa fa-linkedin"></i></a>
-                  </li>
-                  <li>
-                    <a href="#"><i class="fa fa-dribbble"></i></a>
-                  </li>
-                  <li>
-                    <a href="#"><i class="fa fa-google-plus"></i></a>
-                  </li>
-                </ul> 
-                {% else %}
-                <ul class="nav navbar-nav">
-                  <li>
-                    <a href="#"><i class="fa fa-facebook"></i></a>
-                  </li>
-                  <li>
-                    <a href="#"><i class="fa fa-twitter"></i></a>
-                  </li>
-                  <li>
-                    <a href="#"><i class="fa fa-linkedin"></i></a>
-                  </li>
-                  <li>
-                    <a href="#"><i class="fa fa-dribbble"></i></a>
-                  </li>
-                  <li>
-                    <a href="#"><i class="fa fa-google-plus"></i></a>
-                  </li>
-                </ul> 
-                {% endif %}
-              </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="social-icons pull-right" style="height: 0;">
+              {% if productDetails %}
+              <ul style="display: block;" class="nav navbar-nav">
+                <li>
+                  <a href="#"><i class="fa fa-facebook"></i></a>
+                </li>
+                <li>
+                  <a href="#"><i class="fa fa-twitter"></i></a>
+                </li>
+                <li>
+                  <a href="#"><i class="fa fa-linkedin"></i></a>
+                </li>
+                <li>
+                  <a href="#"><i class="fa fa-dribbble"></i></a>
+                </li>
+                <li>
+                  <a href="#"><i class="fa fa-google-plus"></i></a>
+                </li>
+              </ul>
+              {% else %}
+              <ul class="nav navbar-nav">
+                <li>
+                  <a href="#"><i class="fa fa-facebook"></i></a>
+                </li>
+                <li>
+                  <a href="#"><i class="fa fa-twitter"></i></a>
+                </li>
+                <li>
+                  <a href="#"><i class="fa fa-linkedin"></i></a>
+                </li>
+                <li>
+                  <a href="#"><i class="fa fa-dribbble"></i></a>
+                </li>
+                <li>
+                  <a href="#"><i class="fa fa-google-plus"></i></a>
+                </li>
+              </ul>
+              {% endif %}
             </div>
           </div>
         </div>
       </div>
-      <!--/header_top-->
+    </div>
+    <!--/header_top-->
+  </header>
 
-      <div class="header-middle">
-        <!--header-middle-->
-        <div class="container">
-          <div class="row">
-            <div class="col-sm-4">
-              <div class="logo pull-left">
-                <a href="/"
-                  ><img src="{% static 'images/home/logo.png' %}" alt="" style="width: 9rem;"
-                /></a>
-              </div>
-            </div>
-            <div class="col-sm-8">
-              <div class="shop-menu pull-right">
-                {% if productDetails %}
-                <ul style="display: block; " class="nav navbar-nav"> 
+  <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
+
+
+    <!--header-middle-->
+    <div class="container">
+
+      <div class="row">
+        <div class="col-sm-4">
+          <div class="logo pull-left">
+            <a href="/"><img src="{% static 'images/home/logo1.webp' %}" alt="" style="width: 20%;" /></a>
+          </div>
+          <div class="mainmenu pull-left">
+            <ul class="nav navbar-nav collapse navbar-collapse" style="margin-top: -33px; margin-left: 100px;">
+              <li><a href="/" class="active">Home</a></li>
+              <li class="dropdown">
+                <a href="#">Shop<i class="fa fa-angle-down"></i></a>
+                <ul role="menu" class="sub-menu">
                   <li>
-                    <a href="/cart" style="text-decoration: none;"
-                      ><i class="fa fa-shopping-cart"></i> Cart&nbsp;&nbsp;
-                       {% if user.is_authenticated %}
-                      <div style="color: #fe980f; display: inline">
-                        ({{ len_of_cart }})
-                      </div>
-                      {% endif %}
-                    </a>
+                    <a href="/shop">Products</a>
                   </li>
+                  <li><a href="/cart">Cart</a></li>
+                </ul>
+              </li>
 
+              <li><a href="/contactus">Contact</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="col-sm-3" style="margin-left: -80px; margin-top: 14px;">
+          <form action="/search" class="search_box pull-right" method="get">
+            <input type="text" required name="query" placeholder="Search" />
+            <button type="submit" class="btn btn-fefault">Search</button>
+          </form>
+        </div>
+        <div class="col-sm-8">
+
+          <div class="shop-menu pull-right" style="margin-top: -38px;">
+            <div class="logo" style="height: 0;">
+              <img src="{% static 'images/home/logo2.png' %}" alt=""
+                style="width: 10%; margin-left: -60px; margin-top: 4px; " />
+            </div>
+            {% if productDetails %}
+            <ul style="display: block; " class="nav navbar-nav">
+
+              <li>
+                <a href="/cart" style="text-decoration: none;"><i class="fa fa-shopping-cart"></i> Cart&nbsp;&nbsp;
                   {% if user.is_authenticated %}
-
-                  <li>
-                    <a href=" /accounts/user_logout" style="text-decoration: none;"
-                      ><i class="fa fa-lock"></i> Logout</a
-                    >
-                  </li>
-                  <li>
-                    <h4 style="color: #fe980f;"> 
-                      <i class="fa fa-user"></i> {{ user.username|title }}
-                    </h4>
-                  </li>
-
-                  {% else %}
-
-                  <li>
-                    <a href=" /accounts/user_login" style="text-decoration: none;"
-                      ><i class="fa fa-lock"></i> Login</a
-                    >
-                  </li>
-
+                  <div style="color: #fe980f; display: inline">
+                    ({{ len_of_cart }})
+                  </div>
                   {% endif %}
-                </ul>
-                {% else %}
-                <ul class="nav navbar-nav"> 
-                  <li>
-                    <a href="/cart"
-                      ><i class="fa fa-shopping-cart"></i> Cart&nbsp;&nbsp;
-                       {% if user.is_authenticated %}
-                      <div style="color: #fe980f; display: inline">
-                        ({{ len_of_cart }})
-                      </div>
-                      {% endif %}
-                    </a>
-                  </li>
+                </a>
+              </li>
 
+              {% if user.is_authenticated %}
+
+              <li>
+                <a href=" /accounts/user_logout" style="text-decoration: none;"><i class="fa fa-lock"></i> Logout</a>
+              </li>
+              <li>
+                <h4 style="color: #fe980f;">
+                  <i class="fa fa-user"></i> {{ user.username|title }}
+                </h4>
+              </li>
+
+              {% else %}
+
+              <li>
+                <a href=" /accounts/user_login" style="text-decoration: none;"><i class="fa fa-lock"></i> Login</a>
+              </li>
+
+              {% endif %}
+            </ul>
+            {% else %}
+            <ul class="nav navbar-nav">
+              <li>
+                <a href="/cart"><i class="fa fa-shopping-cart"></i> Cart&nbsp;&nbsp;
                   {% if user.is_authenticated %}
-
-                  <li>
-                    <a href=" /accounts/user_logout"
-                      ><i class="fa fa-lock"></i> Logout</a
-                    >
-                  </li>
-                  <li>
-                    <h4 style="color: #fe980f;"> 
-                      <i class="fa fa-user"></i> {{ user.username|title }}
-                    </h4>
-                  </li>
-
-                  {% else %}
-
-                  <li>
-                    <a href=" /accounts/user_login"
-                      ><i class="fa fa-lock"></i> Login</a
-                    >
-                  </li>
-
+                  <div style="color: #fe980f; display: inline">
+                    ({{ len_of_cart }})
+                  </div>
                   {% endif %}
-                </ul>
-                {% endif %}
-              </div>
+                </a>
+              </li>
+
+              {% if user.is_authenticated %}
+
+              <li>
+                <a href=" /accounts/user_logout"><i class="fa fa-lock"></i> Logout</a>
+              </li>
+              <li>
+                <h4 style="color: #fe980f;">
+                  <i class="fa fa-user"></i> {{ user.username|title }}
+                </h4>
+              </li>
+
+              {% else %}
+
+              <li>
+                <a href=" /accounts/user_login"><i class="fa fa-lock"></i> Login</a>
+              </li>
+
+              {% endif %}
+            </ul>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+    <!--/header-middle-->
+
+    <div class="header-bottom">
+      <!--header-bottom-->
+      <div class="container">
+        <div class="row">
+          <div class="col-sm-9">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
             </div>
           </div>
         </div>
       </div>
-      <!--/header-middle-->
+    </div>
+    <!--/header-bottom-->
+  </nav>
 
-      <div class="header-bottom">
-        <!--header-bottom-->
-        <div class="container">
-          <div class="row">
-            <div class="col-sm-9">
-              <div class="navbar-header">
-                <button
-                  type="button"
-                  class="navbar-toggle"
-                  data-toggle="collapse"
-                  data-target=".navbar-collapse"
-                >
-                  <span class="sr-only">Toggle navigation</span>
-                  <span class="icon-bar"></span>
-                  <span class="icon-bar"></span>
-                  <span class="icon-bar"></span>
-                </button>
-              </div>
-              <div class="mainmenu pull-left">
-                <ul class="nav navbar-nav collapse navbar-collapse">
-                  <li><a href="/" class="active">Home</a></li>
-                  <li class="dropdown">
-                    <a href="#">Shop<i class="fa fa-angle-down"></i></a>
-                    <ul role="menu" class="sub-menu">
-                      <li>
-                        <a href="/shop">Products</a>
-                      </li>
-                      <li><a href="/cart">Cart</a></li>
-                    </ul>
-                  </li>
+  {% block start %} {% endblock %}
 
-                  <li><a href="/contactus">Contact</a></li>
-                </ul>
-              </div>
-            </div>
-            <div class="col-sm-3">
-              <form action="/search" class="search_box pull-right" method="get">
-                <input type="text" required name="query" placeholder="Search" />
-                <button type="submit" class="btn btn-fefault">Search</button>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!--/header-bottom-->
-    </header>
-
-    {% block start %} {% endblock %}
-
-    <!--/header-->
-    <footer id="footer">
-      <div class="FOOTER-ICONS">
-       
-        <a href="https://496gf0lz.r.ap-south-1.awstrack.me/L0/https:%2F%2Fmerchant.razorpay.com%2Fpolicy%2FM5ty4flzbvx4eI%2Fprivacy/1/01090188ef218015-43c0165a-d777-43c5-b743-76454cfa95cd-000000/o8-x3DvGSwc1s88cahA4XbIRKwA=108"><i style="color: grey;" class="fas fa-shield-alt"></i></a>
-        <a href="https://496gf0lz.r.ap-south-1.awstrack.me/L0/https:%2F%2Fmerchant.razorpay.com%2Fpolicy%2FM5ty4flzbvx4eI%2Fterms/1/01090188ef93e82a-fef0eae9-3bdc-4792-9756-7e2d79877171-000000/4Erz4wOh1pdIxeBP3aJodLnZSdg=108"><i style="color: grey;" class="fas fa-file-contract"></i></a>
-        <a href="https://496gf0lz.r.ap-south-1.awstrack.me/L0/https:%2F%2Fmerchant.razorpay.com%2Fpolicy%2FM5ty4flzbvx4eI%2Frefund/1/01090188f139d18e-f55c6ac5-ec1b-4898-968c-46ccd8ba1ea1-000000/SgFhlEt3Hq3ygiZuk1Q9hcTxQx8=108"><i style="color: grey;" class="fas fa-undo-alt"></i></a>
-        <a href="https://496gf0lz.r.ap-south-1.awstrack.me/L0/https:%2F%2Fmerchant.razorpay.com%2Fpolicy%2FM5ty4flzbvx4eI%2Fshipping/1/01090188f142edb4-17128ebb-d5a2-4cf7-9453-c36f5723a6b7-000000/LkUZ17zMve3IG3ZA4ANg8WQ0x7w=108"><i style="color: grey;" class="fas fa-truck"></i></a>
-
-      </div>
-      <!--Footer-->
-
-      
-
-      <div class="footer-bottom">
-        <div class="container">
-          <div class="row">
-            <p class="pull-left">
-              Copyright © 2023 Tulsi Mala All rights reserved.
-            </p>
-            
-
-            <p class="pull-right">
-              
-              
-              
-              Designed and Developed by
-              <span
-                ><a href="https://www.linkedin.com/in/sparsh-agarwal-a74128138/"
-                  >Sparsh Agarwal</a
-                >
-                and
-                <a href="https://www.linkedin.com/in/tanishq-soni-899146214/"
-                  >Tanishq Soni</a
-                ></span
-              >
-            </p>
-          </div>
-        </div>
-      </div>
-    </footer>
-    <!--/Footer-->
+  <!--/header-->
+  <footer id="footer">
+    <!--Footer-->
     
+    
+    
+    <div class="footer-bottom">
+      <div class="container">
+        <div class="row">
+          
+      
+            <a
+              href="https://496gf0lz.r.ap-south-1.awstrack.me/L0/https:%2F%2Fmerchant.razorpay.com%2Fpolicy%2FM5ty4flzbvx4eI%2Fprivacy/1/01090188ef218015-43c0165a-d777-43c5-b743-76454cfa95cd-000000/o8-x3DvGSwc1s88cahA4XbIRKwA=108"><i
+                style="color: grey;" class="fas fa-shield-alt"></i></a>
+            <a
+              href="https://496gf0lz.r.ap-south-1.awstrack.me/L0/https:%2F%2Fmerchant.razorpay.com%2Fpolicy%2FM5ty4flzbvx4eI%2Fterms/1/01090188ef93e82a-fef0eae9-3bdc-4792-9756-7e2d79877171-000000/4Erz4wOh1pdIxeBP3aJodLnZSdg=108"><i
+                style="color: grey;" class="fas fa-file-contract"></i></a>
+            <a
+              href="https://496gf0lz.r.ap-south-1.awstrack.me/L0/https:%2F%2Fmerchant.razorpay.com%2Fpolicy%2FM5ty4flzbvx4eI%2Frefund/1/01090188f139d18e-f55c6ac5-ec1b-4898-968c-46ccd8ba1ea1-000000/SgFhlEt3Hq3ygiZuk1Q9hcTxQx8=108"><i
+                style="color: grey;" class="fas fa-undo-alt"></i></a>
+            <a
+              href="https://496gf0lz.r.ap-south-1.awstrack.me/L0/https:%2F%2Fmerchant.razorpay.com%2Fpolicy%2FM5ty4flzbvx4eI%2Fshipping/1/01090188f142edb4-17128ebb-d5a2-4cf7-9453-c36f5723a6b7-000000/LkUZ17zMve3IG3ZA4ANg8WQ0x7w=108"><i
+                style="color: grey;" class="fas fa-truck"></i></a>
+      
+          </div>
+          <p class="pull-left">
+            Copyright © 2023 RSM Tulsi Mala All rights reserved.
+          </p>
 
-    <script src="{% static 'js/jquery.js' %}"></script>
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>
-    <script src="{% static 'js/jquery.scrollUp.min.js' %}"></script>
-    <script src="{% static 'js/price-range.js' %}"></script>
-    <script src="{% static 'js/jquery.prettyPhoto.js' %}"></script>
-    <script src="{% static 'js/main.js' %}"></script>
-  </body>
+
+          <p class="pull-right">
+
+
+
+            Designed and Developed by
+            <span><a href="https://www.linkedin.com/in/sparsh-agarwal-a74128138/">Sparsh Agarwal</a>
+              and
+              <a href="https://www.linkedin.com/in/tanishq-soni-899146214/">Tanishq Soni</a></span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <!--/Footer-->
+
+
+  <script src="{% static 'js/jquery.js' %}"></script>
+  <script src="{% static 'js/bootstrap.min.js' %}"></script>
+  <script src="{% static 'js/jquery.scrollUp.min.js' %}"></script>
+  <script src="{% static 'js/price-range.js' %}"></script>
+  <script src="{% static 'js/jquery.prettyPhoto.js' %}"></script>
+  <script src="{% static 'js/main.js' %}"></script>
+</body>
+
 </html>
